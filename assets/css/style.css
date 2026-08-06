@@ -651,33 +651,84 @@ a:hover { color: #7dd3fc; }
   background: rgba(56,189,248,0.06);
 }
 
-/* ============ 首页巨型数字 Hero ============ */
-.hero-mega {
+/* ============ 首页全屏背景轮播 Hero ============ */
+.hero-bg {
+  position: relative;
+  min-height: calc(100vh - var(--nav-h));
+  overflow: hidden;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 70vh;
-  text-align: center;
-  padding: 64px 20px 40px;
 }
-.hero-mega-nums { display: flex; align-items: center; gap: clamp(32px, 6vw, 88px); flex-wrap: wrap; justify-content: center; }
-.mega b {
+.bg-slide {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 1.4s ease;
+}
+.bg-slide.on { opacity: 1; }
+.hero-bg-mask {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 40%, rgba(7, 11, 20, 0.35), rgba(7, 11, 20, 0.82)),
+    linear-gradient(rgba(7, 11, 20, 0.5), rgba(7, 11, 20, 0.78));
+}
+.hero-bg-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 0 20px;
+}
+.hero-bg-content .mega b {
   font-family: var(--font-mono);
   font-size: clamp(72px, 11vw, 150px);
   font-weight: 900;
-  background: var(--grad-main);
+  background: linear-gradient(120deg, #e0f2fe 0%, #38bdf8 45%, #a78bfa 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   line-height: 1;
   letter-spacing: -3px;
   display: block;
+  text-shadow: 0 0 60px rgba(56, 189, 248, 0.35);
 }
-.mega b span { font-size: 0.42em; letter-spacing: -1px; }
-.mega p { color: var(--text-muted); margin-top: 12px; font-size: 14px; letter-spacing: 3px; }
-.mega-sep { width: 2px; height: 96px; background: linear-gradient(transparent, rgba(255,255,255,0.3), transparent); }
-.hero-mega-sub { margin-top: 30px; color: var(--text-dim); letter-spacing: 5px; font-size: 13.5px; }
+.hero-bg-content .mega b span { font-size: 0.42em; letter-spacing: -1px; }
+.hero-bg-content .mega p {
+  color: rgba(226, 234, 248, 0.85);
+  margin-top: 12px;
+  font-size: 14px;
+  letter-spacing: 3px;
+}
+.hero-bg-nums { display: flex; align-items: center; justify-content: center; gap: clamp(32px, 6vw, 88px); flex-wrap: wrap; }
+.hero-bg-sep { width: 2px; height: 96px; background: linear-gradient(transparent, rgba(255, 255, 255, 0.35), transparent); }
+.hero-bg-sub { margin-top: 30px; color: rgba(147, 160, 184, 0.9); letter-spacing: 5px; font-size: 13.5px; }
+.hero-bg-dots {
+  position: absolute;
+  bottom: 26px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  display: flex;
+  gap: 8px;
+}
+.hero-bg-dots button {
+  width: 9px; height: 9px; border-radius: 50%; border: none; padding: 0;
+  background: rgba(255, 255, 255, 0.4); cursor: pointer; transition: all 0.3s;
+}
+.hero-bg-dots button.on { background: #38bdf8; width: 26px; border-radius: 5px; }
+.hero-bg-hint {
+  position: absolute;
+  bottom: 26px;
+  right: 28px;
+  z-index: 3;
+  color: rgba(147, 160, 184, 0.8);
+  font-size: 12.5px;
+  letter-spacing: 2px;
+}
 
 /* ============ 首页图片轮播 ============ */
 .carousel {

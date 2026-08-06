@@ -439,6 +439,10 @@
     var maxV = 0;
     values.forEach(function (r) { r.forEach(function (v) { if (v > maxV) maxV = v; }); });
     if (maxV === 0) maxV = 1;
+    /* rowScale：每行按行内最大值归一化（跨量纲指标对比用） */
+    var rowMaxes = values.map(function (r) {
+      return Math.max.apply(null, r.map(function (v) { return v || 0; }));
+    });
 
     var b = base({ width: W, height: H });
     var svg = b.svg;
@@ -457,7 +461,8 @@
       }, [String(r)]));
       cols.forEach(function (c, ci) {
         var v = values[ri][ci] || 0;
-        var t = maxV > 0 ? v / maxV : 0;
+        var rmx = opts.rowScale ? rowMaxes[ri] : maxV;
+        var t = rmx > 0 ? v / rmx : 0;
         var rect = E("rect", {
           x: rowLab + cellW * ci + 1, y: colLab + cellH * ri + 1,
           width: cellW - 2, height: cellH - 2, rx: 4,

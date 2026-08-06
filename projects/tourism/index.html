@@ -111,11 +111,13 @@ Chart.line(document.getElementById("timeline"), {
     { name: "威海文旅", values: [175,611,819,599,841,1002,491,423,273], color: "#f472b6" }
   ],
   area: false,
+  clean: true,
   height: 380
 });
 Chart.hbar(document.getElementById("videoBar"), {
   labels: ["河南省文旅厅", "好客山东", "洛阳旅游", "威海文旅"],
   values: [1500, 1495, 1462, 1455],
+  clean: true,
   height: 200
 });
 Chart.bar(document.getElementById("interactBar"), {
@@ -124,18 +126,21 @@ Chart.bar(document.getElementById("interactBar"), {
     { name: "平均点赞", values: [7015, 6966, 3567, 1596], color: "#38bdf8" },
     { name: "平均转发", values: [2479, 3050, 474, 140], color: "#a78bfa" }
   ],
+  clean: true,
   height: 230
 });
 Chart.hbar(document.getElementById("ipBar"), {
   labels: ["河南", "山东", "广东", "江苏", "浙江", "北京", "河北", "陕西", "上海"],
   values: [45616, 37473, 9918, 7576, 5897, 5159, 4434, 4034, 3978],
   colors: ["#38bdf8", "#38bdf8", "#a78bfa", "#a78bfa", "#a78bfa", "#a78bfa", "#a78bfa", "#a78bfa", "#a78bfa"],
+  clean: true,
   height: 300
 });
 Chart.hbar(document.getElementById("homeBar"), {
   labels: ["河南省文旅厅（豫）", "好客山东（鲁）", "威海文旅（鲁）", "洛阳旅游（豫）"],
   values: [49.0, 47.0, 41.0, 33.0],
   unit: "%",
+  clean: true,
   height: 200
 });
 </script>

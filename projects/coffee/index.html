@@ -10,9 +10,48 @@
   .clouds { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
   .cloud { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 14px; }
   .cloud h4 { font-size: 14px; margin-bottom: 10px; text-align: center; color: var(--text); }
+
+  /* 词云弹幕背景（全局 fixed，滚动一直存在） */
+  body.page-danmaku .danmaku-bg,
+  body.page-danmaku .coffee-hero-mask {
+    position: fixed; inset: 0; z-index: 0;
+    pointer-events: none;
+  }
+  .danmaku-bg { overflow: hidden; }
+  .danmaku-bg span {
+    position: absolute;
+    left: 0;
+    top: 0;
+    white-space: nowrap;
+    font-weight: 600;
+    opacity: 0.45;
+    animation-name: danmaku;
+    animation-timing-function: linear;
+    animation-fill-mode: forwards;
+    will-change: transform;
+    text-shadow: 0 0 14px rgba(56, 189, 248, 0.18);
+  }
+  @keyframes danmaku {
+    from { transform: translateX(calc(100vw + 100%)); }
+    to { transform: translateX(-120%); }
+  }
+  .coffee-hero-mask {
+    background:
+      radial-gradient(ellipse 75% 65% at 50% 42%, rgba(7, 11, 20, 0.4), rgba(7, 11, 20, 0.72)),
+      linear-gradient(rgba(7, 11, 20, 0.28), rgba(7, 11, 20, 0.62));
+  }
+  body.page-danmaku .nav,
+  body.page-danmaku main,
+  body.page-danmaku .footer {
+    position: relative; z-index: 1;
+  }
 </style>
 </head>
-<body>
+<body class="page-danmaku">
+
+<!-- 全局词云弹幕背景（滚动全程可见） -->
+<div class="danmaku-bg" id="danmakuBg"></div>
+<div class="coffee-hero-mask"></div>
 
 <nav class="nav">
   <a class="nav-logo" href="../../index.html">SanZiNEO</a>
@@ -23,7 +62,7 @@
 </nav>
 
 <header class="proj-hero">
-  <div class="proj-hero-left" style="grid-column:1">
+  <div class="proj-hero-left" style="grid-column:1;position:relative;z-index:2">
     <div class="crumbs reveal"><a href="../../index.html">首页</a> / 咖啡广告对比</div>
     <h1 class="proj-hero-title reveal" style="--d:.05s">咖啡茶饮品牌广告效果对比研究</h1>
     <p class="proj-hero-desc reveal" style="--d:.1s">
@@ -36,7 +75,7 @@
       <div class="proj-hero-num"><b data-count="3">0</b><span>campaign 品牌</span></div>
     </div>
   </div>
-  <div class="proj-hero-visual reveal" style="--d:.12s;grid-column:2">
+  <div class="proj-hero-visual reveal" style="--d:.12s;grid-column:2;position:relative;z-index:2">
     <div class="chart-title" style="font-size:17px">三场 campaign 日互动节奏（按活动第 N 天对齐）</div>
     <div class="chart-sub" style="margin-bottom:6px">瑞幸：官宣 11719 + 放量双峰｜古茗：猜口令免单日 7192 单峰｜星巴克：功能问答多峰平缓</div>
     <div class="chart-body" id="timeline"></div>
@@ -48,23 +87,15 @@
   <section class="section" style="padding-top:24px">
     <div class="wide-charts">
       <div class="chart-card reveal">
-        <div class="chart-title">单帖平均互动量</div>
-        <div class="chart-sub">联名 &gt; 代言 &gt; 功能：瑞幸 1692 / 古茗 1007 / 星巴克 274</div>
-        <div class="chart-body" id="perPost"></div>
+        <div class="chart-title">三品牌 campaign 综合对比</div>
+        <div class="chart-sub">行内相对亮度：亮 = 该指标下领先品牌。互动、人群、粘性一次看全</div>
+        <div class="chart-body" id="overview"></div>
       </div>
       <div class="chart-card reveal">
-        <div class="chart-title">评论人群结构：女性 vs SVIP 占比</div>
-        <div class="chart-sub">古茗女性 76.9% 最高，瑞幸付费会员 34.2% 最高</div>
-        <div class="chart-body" id="demogBar"></div>
+        <div class="chart-title">跨品牌关注矩阵（%）</div>
+        <div class="chart-sub">行 = 评论用户所属品牌，列 = 关注了某品牌官方账号的比例；星巴克用户关注瑞幸达 14.5%</div>
+        <div class="chart-body" id="overlap"></div>
       </div>
-    </div>
-  </section>
-
-  <section class="section" style="padding-top:8px">
-    <div class="chart-card reveal">
-      <div class="chart-title">跨品牌关注矩阵（%）：受众重叠量化竞争格局</div>
-      <div class="chart-sub">行 = 评论用户所属品牌，列 = 关注了某品牌官方账号的比例。星巴克用户关注瑞幸达 14.5%——最大跨品牌交叉</div>
-      <div class="chart-body" id="overlap"></div>
     </div>
   </section>
 
@@ -80,30 +111,6 @@
     </div>
   </section>
 
-  <section class="section" style="padding-top:8px">
-    <div class="section-head reveal">
-      <div class="section-kicker">Findings</div>
-      <h2 class="section-title">关键发现</h2>
-    </div>
-    <div class="findings reveal">
-      <div class="finding">
-        <div class="f-tag">人群定位</div>
-        <h4>三种策略触达三类人群</h4>
-        <p>星巴克 = 高净值都市人群（品牌粉丝 57.8%、科技数码渗透 83.9%）；古茗 = 年轻女性（76.9%）+ 明星粉丝转化；瑞幸 = 高价值年轻客群（SVIP 34.2%）。</p>
-      </div>
-      <div class="finding">
-        <div class="f-tag">重叠洞察</div>
-        <h4>星巴克是被追随的行业标杆</h4>
-        <p>星巴克自身粉丝底盘 40.7% 最厚，且向瑞幸输出最多交叉关注（14.5%）——瑞幸联名营销是对高端客群的下沉争夺。</p>
-      </div>
-      <div class="finding">
-        <div class="f-tag">语义差异</div>
-        <h4>评论区语言直接反映策略</h4>
-        <p>瑞幸围绕产品与 IP（生椰拿铁 / LOOPY / 周边）、星巴克围绕功能成分（蛋白质 / 乳糖 / 牛乳）、古茗围绕福利与明星（口令 / 阿祖 / 免费）。</p>
-      </div>
-    </div>
-  </section>
-
 </main>
 
 <footer class="footer">
@@ -116,6 +123,99 @@
 <script src="../../assets/js/chart.js"></script>
 <script src="../../assets/js/common.js"></script>
 <script>
+/* ===== 词云弹幕背景（三品牌混滚，从右往左无限滚动） ===== */
+(function () {
+  var DANMAKU = [
+    /* 瑞幸（蓝系） */
+    { t: "生椰拿铁", w: 15, c: "#38bdf8" }, { t: "生椰", w: 9, c: "#38bdf8" }, { t: "瑞幸", w: 9, c: "#38bdf8" },
+    { t: "庆生", w: 7, c: "#38bdf8" }, { t: "周边", w: 7, c: "#38bdf8" }, { t: "周年", w: 6, c: "#38bdf8" },
+    { t: "LOOPY", w: 5, c: "#22d3ee" }, { t: "椰子", w: 5, c: "#38bdf8" }, { t: "陶喆", w: 5, c: "#38bdf8" },
+    { t: "咖啡", w: 5, c: "#38bdf8" }, { t: "冷榨", w: 4, c: "#38bdf8" }, { t: "椰浆", w: 4, c: "#38bdf8" },
+    { t: "椰香", w: 4, c: "#38bdf8" }, { t: "联名", w: 4, c: "#38bdf8" }, { t: "ZANMANG", w: 3, c: "#22d3ee" },
+    { t: "椰奶", w: 3, c: "#38bdf8" }, { t: "锁鲜", w: 3, c: "#38bdf8" }, { t: "新品", w: 3, c: "#38bdf8" },
+    { t: "快乐", w: 3, c: "#38bdf8" }, { t: "轻椰茉莉拿铁", w: 2, c: "#38bdf8" }, { t: "冰沙", w: 2, c: "#38bdf8" },
+    { t: "保温杯", w: 2, c: "#38bdf8" }, { t: "转发过2000加抽10位", w: 2, c: "#7dd3fc" }, { t: "揪10位送饮品券", w: 2, c: "#7dd3fc" },
+    /* 星巴克（紫系） */
+    { t: "高蛋白拿铁PRO", w: 23, c: "#a78bfa" }, { t: "蛋白质", w: 23, c: "#a78bfa" }, { t: "乳糖", w: 23, c: "#a78bfa" },
+    { t: "好喝", w: 21, c: "#a78bfa" }, { t: "牛乳", w: 20, c: "#a78bfa" }, { t: "高蛋白", w: 18, c: "#a78bfa" },
+    { t: "蛋白", w: 13, c: "#a78bfa" }, { t: "PRO", w: 12, c: "#c4b5fd" }, { t: "不耐", w: 12, c: "#a78bfa" },
+    { t: "自然", w: 11, c: "#a78bfa" }, { t: "香浓", w: 11, c: "#a78bfa" }, { t: "原生", w: 11, c: "#a78bfa" },
+    { t: "轻松", w: 11, c: "#a78bfa" }, { t: "礼物", w: 9, c: "#a78bfa" }, { t: "享用", w: 9, c: "#a78bfa" },
+    { t: "好奶", w: 9, c: "#a78bfa" }, { t: "周一", w: 9, c: "#a78bfa" }, { t: "星巴克", w: 8, c: "#a78bfa" },
+    { t: "创新", w: 7, c: "#a78bfa" }, { t: "自带杯", w: 6, c: "#a78bfa" }, { t: "硬核", w: 5, c: "#a78bfa" },
+    { t: "6.0高蛋白牛乳", w: 8, c: "#c4b5fd" }, { t: "乳糖不耐也可尽情享用", w: 8, c: "#c4b5fd" },
+    { t: "一杯20g原生乳蛋白", w: 3, c: "#c4b5fd" }, { t: "高蛋白抹茶拿铁", w: 2, c: "#a78bfa" },
+    { t: "只为呈现这一杯", w: 2, c: "#c4b5fd" }, { t: "来杯高蛋白拿铁PRO", w: 2, c: "#c4b5fd" },
+    /* 古茗（绿/黄系） */
+    { t: "咖啡", w: 56, c: "#34d399" }, { t: "口令", w: 36, c: "#fbbf24" }, { t: "古茗", w: 27, c: "#34d399" },
+    { t: "阿祖", w: 25, c: "#f472b6" }, { t: "吴彦祖", w: 17, c: "#f472b6" }, { t: "任性", w: 12, c: "#fbbf24" },
+    { t: "Good", w: 11, c: "#fbbf24" }, { t: "轻椰拿铁", w: 11, c: "#34d399" }, { t: "工作日", w: 9, c: "#34d399" },
+    { t: "题目", w: 9, c: "#fbbf24" }, { t: "免费", w: 9, c: "#fbbf24" }, { t: "一杯", w: 9, c: "#34d399" },
+    { t: "门店", w: 8, c: "#34d399" }, { t: "同款", w: 7, c: "#34d399" }, { t: "现磨", w: 6, c: "#34d399" },
+    { t: "全场", w: 6, c: "#34d399" }, { t: "尝尝", w: 6, c: "#34d399" }, { t: "随行", w: 5, c: "#34d399" },
+    { t: "壁纸", w: 5, c: "#34d399" }, { t: "鲜活", w: 4, c: "#34d399" }, { t: "贴纸", w: 4, c: "#34d399" },
+    { t: "猜口令｜50000杯古茗咖啡", w: 6, c: "#fbbf24" }, { t: "阿祖请你任性喝", w: 2, c: "#f472b6" },
+    { t: "猜口令｜200000杯古茗咖啡", w: 2, c: "#fbbf24" }, { t: "品质合伙人", w: 2, c: "#f472b6" }, { t: "美式", w: 2, c: "#34d399" }
+  ];
+  var totalW = 0;
+  DANMAKU.forEach(function (d) { totalW += d.w; });
+  /* 独立池子：短词（加权随机）+ 长句（洗牌轮转，每条都出现、不连续重复） */
+  var SHORT = DANMAKU.filter(function (d) { return d.t.length <= 6; });
+  var LONG = DANMAKU.filter(function (d) { return d.t.length > 6; });
+  var shortTotal = 0;
+  SHORT.forEach(function (d) { shortTotal += d.w; });
+  function shuffle(a) {
+    var arr = a.slice();
+    for (var i = arr.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+    }
+    return arr;
+  }
+  var longDeck = shuffle(LONG);
+  var longPos = 0;
+  function pickShort() {
+    var r = Math.random() * shortTotal, acc = 0;
+    for (var i = 0; i < SHORT.length; i++) {
+      acc += SHORT[i].w;
+      if (r <= acc) return SHORT[i];
+    }
+    return SHORT[0];
+  }
+  function pickLong() {
+    var d = longDeck[longPos];
+    longPos = (longPos + 1) % longDeck.length;
+    if (longPos === 0) longDeck = shuffle(longDeck);
+    return d;
+  }
+  var box = document.getElementById("danmakuBg");
+  if (box) {
+    var maxW = DANMAKU.reduce(function (a, d) { return d.w > a ? d.w : a; }, 0);
+    function spawnItem(pickFn, forceLong) {
+      if (!box.isConnected || box.children.length > 75) return;
+      var d = pickFn();
+      var span = document.createElement("span");
+      span.textContent = d.t;
+      var isLong = forceLong || d.t.length > 6;
+      var size = isLong ? 20 + Math.random() * 16 : 18 + (d.w / maxW) * 30 + Math.random() * 8;
+      span.style.fontSize = size.toFixed(1) + "px";
+      span.style.color = d.c;
+      span.style.top = (2 + Math.random() * 92).toFixed(1) + "%";
+      span.style.opacity = (0.3 + Math.random() * 0.28).toFixed(2);
+      span.style.animationDuration = (10 + Math.random() * 16).toFixed(1) + "s";
+      /* 从屏幕外右缘生成 → 滑过全屏 → 左侧销毁 */
+      span.addEventListener("animationend", function () { span.remove(); });
+      box.appendChild(span);
+    }
+    /* 初始：短词连发快速填满 + 长句先出几条 */
+    for (var i = 0; i < 20; i++) setTimeout(function () { spawnItem(pickShort, false); }, i * 110);
+    for (var j = 0; j < 4; j++) setTimeout(function () { spawnItem(pickLong, true); }, 400 + j * 900);
+    /* 双池独立节奏：短词高频、长句低频轮转 */
+    setInterval(function () { spawnItem(pickShort, false); }, 240);
+    setInterval(function () { spawnItem(pickLong, true); }, 2600);
+  }
+})();
+
 /* 时间线 */
 Chart.line(document.getElementById("timeline"), {
   labels: ["D1","D2","D3","D4","D5","D6","D7","D8","D9","D10","D11","D12","D13","D14"],
@@ -125,24 +225,24 @@ Chart.line(document.getElementById("timeline"), {
     { name: "星巴克", values: [93,85,74,83,1574,1270,147,1374,0,87,296,50,1011,1018], color: "#a78bfa" }
   ],
   area: false,
+  clean: true,
   height: 380
 });
-/* 单帖互动 */
-Chart.bar(document.getElementById("perPost"), {
-  labels: ["瑞幸", "古茗", "星巴克"],
-  series: [{ name: "单帖平均互动", values: [1692, 1007, 274], color: "#38bdf8" }],
-  height: 230
-});
-/* 人群结构 */
-Chart.bar(document.getElementById("demogBar"), {
-  labels: ["瑞幸", "星巴克", "古茗"],
-  series: [
-    { name: "女性占比 %", values: [69.0, 65.7, 76.9], color: "#f472b6" },
-    { name: "SVIP 占比 %", values: [34.2, 24.9, 28.0], color: "#a78bfa" }
+/* 三品牌综合对比（行内相对亮度） */
+Chart.heatmap(document.getElementById("overview"), {
+  rows: ["单帖平均互动", "女性占比 %", "SVIP 占比 %", "品牌粉丝占比 %", "平均粉丝数"],
+  cols: ["瑞幸", "星巴克", "古茗"],
+  values: [
+    [1692, 274, 1007],
+    [69.0, 65.7, 76.9],
+    [34.2, 24.9, 28.0],
+    [21.7, 57.8, 9.6],
+    [3661, 7482, 8574]
   ],
-  height: 230
+  rowScale: true,
+  colors: ["#0c1a33", "#38bdf8"]
 });
-/* 重叠矩阵 */
+/* 跨品牌关注矩阵 */
 Chart.heatmap(document.getElementById("overlap"), {
   rows: ["瑞幸评论用户", "星巴克评论用户", "古茗评论用户"],
   cols: ["关注瑞幸", "关注星巴克", "关注古茗"],

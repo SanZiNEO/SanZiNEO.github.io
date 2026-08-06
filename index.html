@@ -3,18 +3,169 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>作品集</title>
-<style>
-  body { font-family: "PingFang SC","Microsoft YaHei",sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; background: #e8e8e8; color: #333; }
-  .card { background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); text-align: center; }
-  h1 { font-size: 24px; margin: 0 0 8px; }
-  p { color: #666; margin: 0; }
-</style>
+<title>SanZiNEO · 作品集</title>
+<meta name="description" content="独立项目作品集：社交媒体用户画像、广告效果研究、弹幕行为实证、误导内容识别与游戏互动产品。">
+<link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-<div class="card">
-  <h1>作品集</h1>
-  <p>正在建设中，稍后再来</p>
-</div>
+
+<nav class="nav">
+  <a class="nav-logo" href="index.html">SanZiNEO</a>
+  <div class="nav-links">
+    <a href="#projects">项目</a>
+    <a href="https://github.com/SanZiNEO" target="_blank" rel="noopener">GitHub ↗</a>
+  </div>
+</nav>
+
+<header class="hero-mega">
+  <div class="hero-mega-nums reveal">
+    <div class="mega">
+      <b data-count="300" data-suffix="万+">0</b>
+      <p>真实社交媒体数据</p>
+    </div>
+    <div class="mega-sep"></div>
+    <div class="mega">
+      <b data-count="575">0</b>
+      <p>开源模组下载</p>
+    </div>
+  </div>
+  <p class="hero-mega-sub reveal" style="--d:.15s">用户画像 · 广告效果 · 弹幕行为 · 内容识别 · 产品开发</p>
+</header>
+
+<!-- 项目截图轮播 -->
+<section class="section" style="padding-top:0">
+  <div class="container">
+    <div class="carousel reveal" id="carousel">
+      <div class="carousel-track" id="carouselTrack">
+        <a class="carousel-slide" href="projects/auto/index.html">
+          <img src="assets/images/auto.png" alt="汽车品牌用户画像">
+          <div class="carousel-cap"><span>汽车品牌社交媒体用户画像与消费者洞察</span><small>24 品牌 · 7 大维度画像体系 · 兴趣渗透雷达</small></div>
+        </a>
+        <a class="carousel-slide" href="projects/coffee/index.html">
+          <img src="assets/images/coffee.png" alt="咖啡茶饮广告效果对比">
+          <div class="carousel-cap"><span>咖啡茶饮品牌广告效果对比研究</span><small>3 场 campaign · 8093 用户 · 词云 / 时间线 / 重叠矩阵</small></div>
+        </a>
+        <a class="carousel-slide" href="projects/bilibili/index.html">
+          <img src="assets/images/bilibili.png" alt="B站弹幕研究">
+          <div class="carousel-cap"><span>B站植入式广告弹幕实证研究</span><small>57.9 万条弹幕 · 三阶段时序模式 · 密度异常度</small></div>
+        </a>
+        <a class="carousel-slide" href="projects/tourism/index.html">
+          <img src="assets/images/tourism.png" alt="文旅传播效能研究">
+          <div class="carousel-cap"><span>鲁豫文旅品牌数字化传播效能研究</span><small>6040 视频 · 17.7 万评论 · BERT 情感三分类</small></div>
+        </a>
+        <a class="carousel-slide" href="projects/gaming/index.html">
+          <img src="assets/images/gaming.png" alt="游戏互动产品">
+          <div class="carousel-cap"><span>Minecraft 过场动画模组与直播互动系统</span><small>MIT 开源 · 双加载器 · 商业验证</small></div>
+        </a>
+        <a class="carousel-slide" href="projects/magpie/index.html">
+          <img src="assets/images/magpie.png" alt="流量新闻识别">
+          <div class="carousel-cap"><span>流量新闻特征识别与悬浮球应用</span><small>7.5 万视频样本 · 17 项封面视觉特征 · 规则交付 APP</small></div>
+        </a>
+      </div>
+      <button class="carousel-btn carousel-prev" type="button" aria-label="上一张">‹</button>
+      <button class="carousel-btn carousel-next" type="button" aria-label="下一张">›</button>
+      <div class="carousel-dots" id="carouselDots"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 项目入口 -->
+<main>
+<section class="section" id="projects">
+  <div class="container">
+    <div class="projects-grid">
+
+      <a class="pcard reveal" href="projects/gaming/index.html" style="--d:.02s">
+        <img class="pcard-img" src="assets/images/gaming.png" alt="游戏互动产品">
+        <h3>游戏互动产品创新与商业化探索</h3>
+        <p class="pcard-desc">Minecraft 过场动画模组 + 直播互动商业化系统，从需求发现到开源分发、商业验证的全流程。</p>
+        <div class="pcard-foot"><span class="pcard-arrow">→</span></div>
+      </a>
+
+      <a class="pcard reveal" href="projects/coffee/index.html" style="--d:.06s">
+        <img class="pcard-img" src="assets/images/coffee.png" alt="咖啡广告效果研究">
+        <h3>咖啡茶饮品牌广告效果对比研究</h3>
+        <p class="pcard-desc">瑞幸联名 / 星巴克功能 / 古茗代言三场 campaign 的广告效果实证对比。</p>
+        <div class="pcard-foot"><span class="pcard-arrow">→</span></div>
+      </a>
+
+      <a class="pcard reveal" href="projects/auto/index.html" style="--d:.10s">
+        <img class="pcard-img" src="assets/images/auto.png" alt="汽车品牌用户画像">
+        <h3>汽车品牌社交媒体用户画像与消费者洞察</h3>
+        <p class="pcard-desc">24 个汽车品牌，7 大维度画像体系 + 10 大兴趣领域渗透模型。</p>
+        <div class="pcard-foot"><span class="pcard-arrow">→</span></div>
+      </a>
+
+      <a class="pcard reveal" href="projects/bilibili/index.html" style="--d:.02s">
+        <img class="pcard-img" src="assets/images/bilibili.png" alt="B站弹幕研究">
+        <h3>B站植入式广告的用户反应模式实证研究</h3>
+        <p class="pcard-desc">57.9 万条弹幕 + 189 份问卷，三阶段时序模式与密度异常度测量方法。</p>
+        <div class="pcard-foot"><span class="pcard-arrow">→</span></div>
+      </a>
+
+      <a class="pcard reveal" href="projects/tourism/index.html" style="--d:.06s">
+        <img class="pcard-img" src="assets/images/tourism.png" alt="文旅传播研究">
+        <h3>短视频视域下鲁豫文旅品牌传播效能研究</h3>
+        <p class="pcard-desc">4 个官方文旅账号，BERT 微调情感三分类 85.75%，双模型加权融合。</p>
+        <div class="pcard-foot"><span class="pcard-arrow">→</span></div>
+      </a>
+
+      <a class="pcard reveal" href="projects/magpie/index.html" style="--d:.10s">
+        <img class="pcard-img" src="assets/images/magpie.png" alt="流量新闻识别">
+        <h3>流量新闻特征识别与短视频悬浮球应用</h3>
+        <p class="pcard-desc">7.5 万视频标题 + 封面双源特征工程，规则引擎交付悬浮球 APP 集成。</p>
+        <div class="pcard-foot"><span class="pcard-arrow">→</span></div>
+      </a>
+
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <p>© 2026 SanZiNEO · 作品集</p>
+    <p><a href="https://github.com/SanZiNEO" target="_blank" rel="noopener">github.com/SanZiNEO ↗</a></p>
+  </div>
+</footer>
+
+<script src="assets/js/common.js"></script>
+<script>
+/* 轮播 */
+(function () {
+  var track = document.getElementById("carouselTrack");
+  var slides = track.children.length;
+  var dotsBox = document.getElementById("carouselDots");
+  var idx = 0, timer = null;
+
+  for (var i = 0; i < slides; i++) {
+    var d = document.createElement("button");
+    d.type = "button";
+    d.setAttribute("aria-label", "第 " + (i + 1) + " 张");
+    d.addEventListener("click", function () { go(Array.prototype.indexOf.call(dotsBox.children, this)); });
+    dotsBox.appendChild(d);
+  }
+
+  function go(n) {
+    idx = (n + slides) % slides;
+    track.style.transform = "translateX(-" + idx * 100 + "%)";
+    Array.prototype.forEach.call(dotsBox.children, function (d, i) {
+      d.classList.toggle("on", i === idx);
+    });
+  }
+
+  function auto() { timer = setInterval(function () { go(idx + 1); }, 4000); }
+  function stop() { if (timer) { clearInterval(timer); timer = null; } }
+
+  var box = document.getElementById("carousel");
+  box.addEventListener("mouseenter", stop);
+  box.addEventListener("mouseleave", auto);
+  document.querySelector(".carousel-prev").addEventListener("click", function () { stop(); go(idx - 1); });
+  document.querySelector(".carousel-next").addEventListener("click", function () { stop(); go(idx + 1); });
+
+  go(0);
+  auto();
+})();
+</script>
 </body>
 </html>

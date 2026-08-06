@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>咖啡茶饮品牌社交媒体广告效果对比研究 · SanZiNEO 作品集</title>
+<meta name="description" content="瑞幸联名、星巴克功能营销、古茗明星代言三场 campaign 实证对比。">
+<link rel="stylesheet" href="../../assets/css/style.css">
+<style>
+  .clouds { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+  .cloud { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 14px; }
+  .cloud h4 { font-size: 14px; margin-bottom: 10px; text-align: center; color: var(--text); }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-logo" href="../../index.html">SanZiNEO</a>
+  <div class="nav-links">
+    <a href="../../index.html#projects">项目</a>
+    <a href="https://github.com/SanZiNEO" target="_blank" rel="noopener">GitHub ↗</a>
+  </div>
+</nav>
+
+<header class="proj-hero">
+  <div class="proj-hero-left" style="grid-column:1">
+    <div class="crumbs reveal"><a href="../../index.html">首页</a> / 咖啡广告对比</div>
+    <h1 class="proj-hero-title reveal" style="--d:.05s">咖啡茶饮品牌广告效果对比研究</h1>
+    <p class="proj-hero-desc reveal" style="--d:.1s">
+      瑞幸联名、星巴克功能营销、古茗明星代言——三场 campaign 的微博实证对比。
+      联名双峰引爆、代言单峰爆发、功能多峰长尾，三种传播策略的曲线差异一目了然。
+    </p>
+    <div class="proj-hero-nums reveal" style="--d:.15s">
+      <div class="proj-hero-num"><b data-count="8093">0</b><span>评论用户（全量）</span></div>
+      <div class="proj-hero-num"><b data-count="70" data-suffix="万+">0</b><span>关注关系</span></div>
+      <div class="proj-hero-num"><b data-count="3">0</b><span>campaign 品牌</span></div>
+    </div>
+  </div>
+  <div class="proj-hero-visual reveal" style="--d:.12s;grid-column:2">
+    <div class="chart-title" style="font-size:17px">三场 campaign 日互动节奏（按活动第 N 天对齐）</div>
+    <div class="chart-sub" style="margin-bottom:6px">瑞幸：官宣 11719 + 放量双峰｜古茗：猜口令免单日 7192 单峰｜星巴克：功能问答多峰平缓</div>
+    <div class="chart-body" id="timeline"></div>
+  </div>
+</header>
+
+<main class="container">
+
+  <section class="section" style="padding-top:24px">
+    <div class="wide-charts">
+      <div class="chart-card reveal">
+        <div class="chart-title">单帖平均互动量</div>
+        <div class="chart-sub">联名 &gt; 代言 &gt; 功能：瑞幸 1692 / 古茗 1007 / 星巴克 274</div>
+        <div class="chart-body" id="perPost"></div>
+      </div>
+      <div class="chart-card reveal">
+        <div class="chart-title">评论人群结构：女性 vs SVIP 占比</div>
+        <div class="chart-sub">古茗女性 76.9% 最高，瑞幸付费会员 34.2% 最高</div>
+        <div class="chart-body" id="demogBar"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:8px">
+    <div class="chart-card reveal">
+      <div class="chart-title">跨品牌关注矩阵（%）：受众重叠量化竞争格局</div>
+      <div class="chart-sub">行 = 评论用户所属品牌，列 = 关注了某品牌官方账号的比例。星巴克用户关注瑞幸达 14.5%——最大跨品牌交叉</div>
+      <div class="chart-body" id="overlap"></div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:8px">
+    <div class="section-head reveal">
+      <div class="section-kicker">Word Clouds</div>
+      <h2 class="section-title">三场 campaign 的「语言」</h2>
+    </div>
+    <div class="clouds reveal">
+      <div class="cloud"><h4 style="color:#38bdf8">瑞幸 · 联名</h4><div class="chart-body" id="cloudRk"></div></div>
+      <div class="cloud"><h4 style="color:#a78bfa">星巴克 · 功能</h4><div class="chart-body" id="cloudSb"></div></div>
+      <div class="cloud"><h4 style="color:#34d399">古茗 · 代言</h4><div class="chart-body" id="cloudGm"></div></div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:8px">
+    <div class="section-head reveal">
+      <div class="section-kicker">Findings</div>
+      <h2 class="section-title">关键发现</h2>
+    </div>
+    <div class="findings reveal">
+      <div class="finding">
+        <div class="f-tag">人群定位</div>
+        <h4>三种策略触达三类人群</h4>
+        <p>星巴克 = 高净值都市人群（品牌粉丝 57.8%、科技数码渗透 83.9%）；古茗 = 年轻女性（76.9%）+ 明星粉丝转化；瑞幸 = 高价值年轻客群（SVIP 34.2%）。</p>
+      </div>
+      <div class="finding">
+        <div class="f-tag">重叠洞察</div>
+        <h4>星巴克是被追随的行业标杆</h4>
+        <p>星巴克自身粉丝底盘 40.7% 最厚，且向瑞幸输出最多交叉关注（14.5%）——瑞幸联名营销是对高端客群的下沉争夺。</p>
+      </div>
+      <div class="finding">
+        <div class="f-tag">语义差异</div>
+        <h4>评论区语言直接反映策略</h4>
+        <p>瑞幸围绕产品与 IP（生椰拿铁 / LOOPY / 周边）、星巴克围绕功能成分（蛋白质 / 乳糖 / 牛乳）、古茗围绕福利与明星（口令 / 阿祖 / 免费）。</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <p>© 2026 SanZiNEO · 作品集</p>
+    <p><a href="https://github.com/SanZiNEO" target="_blank" rel="noopener">github.com/SanZiNEO ↗</a></p>
+  </div>
+</footer>
+
+<script src="../../assets/js/chart.js"></script>
+<script src="../../assets/js/common.js"></script>
+<script>
+/* 时间线 */
+Chart.line(document.getElementById("timeline"), {
+  labels: ["D1","D2","D3","D4","D5","D6","D7","D8","D9","D10","D11","D12","D13","D14"],
+  series: [
+    { name: "瑞幸", values: [11719,4376,944,494,8884,943,945,302,1641,126,6253,5222,0,2162], color: "#38bdf8" },
+    { name: "古茗", values: [5658,182,198,254,260,0,0,3486,80,7192,2707,2139,0,0], color: "#34d399" },
+    { name: "星巴克", values: [93,85,74,83,1574,1270,147,1374,0,87,296,50,1011,1018], color: "#a78bfa" }
+  ],
+  area: false,
+  height: 380
+});
+/* 单帖互动 */
+Chart.bar(document.getElementById("perPost"), {
+  labels: ["瑞幸", "古茗", "星巴克"],
+  series: [{ name: "单帖平均互动", values: [1692, 1007, 274], color: "#38bdf8" }],
+  height: 230
+});
+/* 人群结构 */
+Chart.bar(document.getElementById("demogBar"), {
+  labels: ["瑞幸", "星巴克", "古茗"],
+  series: [
+    { name: "女性占比 %", values: [69.0, 65.7, 76.9], color: "#f472b6" },
+    { name: "SVIP 占比 %", values: [34.2, 24.9, 28.0], color: "#a78bfa" }
+  ],
+  height: 230
+});
+/* 重叠矩阵 */
+Chart.heatmap(document.getElementById("overlap"), {
+  rows: ["瑞幸评论用户", "星巴克评论用户", "古茗评论用户"],
+  cols: ["关注瑞幸", "关注星巴克", "关注古茗"],
+  values: [
+    [25.6, 3.5, 5.3],
+    [14.5, 40.7, 9.4],
+    [8.6, 4.1, 28.6]
+  ],
+  unit: "%",
+  colors: ["#0c1a33", "#38bdf8"]
+});
+/* 词云 */
+Chart.tagcloud(document.getElementById("cloudRk"), {
+  words: [
+    {text:"生椰拿铁",weight:15,color:"#38bdf8"},{text:"生椰",weight:9},{text:"庆生",weight:7},{text:"周边",weight:7,color:"#f472b6"},
+    {text:"周年",weight:6},{text:"LOOPY",weight:5,color:"#22d3ee"},{text:"椰子",weight:5},{text:"陶喆",weight:5,color:"#a78bfa"},
+    {text:"冷榨",weight:4},{text:"椰浆",weight:4},{text:"椰香",weight:4},{text:"联名",weight:4,color:"#f472b6"},
+    {text:"ZANMANG",weight:3},{text:"椰奶",weight:3},{text:"锁鲜",weight:3},{text:"新品",weight:3},{text:"快乐",weight:3},
+    {text:"保温杯",weight:2},{text:"轻椰茉莉拿铁",weight:2},{text:"冰沙",weight:2},{text:"壁纸",weight:1},{text:"杯套",weight:1}
+  ]
+});
+Chart.tagcloud(document.getElementById("cloudSb"), {
+  words: [
+    {text:"高蛋白拿铁PRO",weight:23,color:"#a78bfa"},{text:"蛋白质",weight:23},{text:"乳糖",weight:23,color:"#f472b6"},
+    {text:"好喝",weight:21},{text:"牛乳",weight:20},{text:"高蛋白",weight:18,color:"#a78bfa"},{text:"蛋白",weight:13},
+    {text:"PRO",weight:12},{text:"不耐",weight:12},{text:"自然",weight:11},{text:"香浓",weight:11},{text:"原生",weight:11},
+    {text:"轻松",weight:11},{text:"礼物",weight:9},{text:"尽情",weight:9},{text:"享用",weight:9},{text:"好奶",weight:9},
+    {text:"周一",weight:9},{text:"6.0高蛋白牛乳",weight:8},{text:"创新",weight:7},{text:"自带",weight:6},{text:"咖啡",weight:6},
+    {text:"随机",weight:6},{text:"会员",weight:2}
+  ]
+});
+Chart.tagcloud(document.getElementById("cloudGm"), {
+  words: [
+    {text:"咖啡",weight:56,color:"#34d399"},{text:"口令",weight:36,color:"#fbbf24"},{text:"古茗",weight:27},
+    {text:"阿祖",weight:25,color:"#f472b6"},{text:"吴彦祖",weight:17},{text:"任性",weight:12},{text:"Good",weight:11},
+    {text:"轻椰拿铁",weight:11},{text:"工作日",weight:9},{text:"每日",weight:9},{text:"题目",weight:9},{text:"免费",weight:9,color:"#fbbf24"},
+    {text:"一杯",weight:9},{text:"门店",weight:8},{text:"同款",weight:7},{text:"现磨",weight:6},{text:"全场",weight:6},
+    {text:"尝尝",weight:6},{text:"随行",weight:5},{text:"壁纸",weight:5},{text:"鲜活",weight:4},{text:"贴纸",weight:4},
+    {text:"合伙人",weight:2,color:"#a78bfa"},{text:"美式",weight:2}
+  ]
+});
+</script>
+</body>
+</html>

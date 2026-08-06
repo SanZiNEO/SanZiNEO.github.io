@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>流量新闻特征识别与短视频悬浮球应用 · SanZiNEO 作品集</title>
+<meta name="description" content="7.5 万快手视频标题 + 封面双源特征工程，误导性内容识别规则引擎交付悬浮球 APP。">
+<link rel="stylesheet" href="../../assets/css/style.css">
+<style>
+  .rule-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+  .rule { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 18px; transition: all 0.3s; }
+  .rule:hover { transform: translateY(-3px); border-color: rgba(56,189,248,0.4); }
+  .rule .r-w { font-family: var(--font-mono); font-size: 12px; letter-spacing: 1px; margin-bottom: 8px; }
+  .rule h4 { font-size: 15px; margin-bottom: 8px; }
+  .rule .words { display: flex; flex-wrap: wrap; gap: 5px; }
+  .rule .words span { font-size: 11.5px; padding: 2px 8px; border-radius: 6px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text-muted); }
+  .rule .words span.hot { color: #fbbf24; border-color: rgba(251,191,36,0.35); background: rgba(251,191,36,0.07); }
+  code.ruleline { display: block; font-family: var(--font-mono); font-size: 12.5px; color: #a5f3fc; background: rgba(56,189,248,0.06); border: 1px solid rgba(56,189,248,0.15); border-radius: 6px; padding: 4px 10px; margin: 3px 0; }
+  .feat-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-top: 16px; }
+  .feat { font-size: 12.5px; color: var(--text-muted); background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; transition: all 0.3s; }
+  .feat:hover { border-color: rgba(167,139,250,0.45); color: var(--text); }
+  .judge-flow { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-top: 14px; }
+  .judge-step { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px; text-align: center; }
+  .judge-step .j-no { font-family: var(--font-mono); font-size: 11px; color: var(--accent); letter-spacing: 1px; }
+  .judge-step .j-name { font-weight: 700; font-size: 14px; margin: 4px 0; }
+  .judge-step .j-desc { font-size: 11.5px; color: var(--text-muted); line-height: 1.5; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-logo" href="../../index.html">SanZiNEO</a>
+  <div class="nav-links">
+    <a href="../../index.html#projects">项目</a>
+    <a href="https://github.com/SanZiNEO" target="_blank" rel="noopener">GitHub ↗</a>
+  </div>
+</nav>
+
+<header class="proj-hero">
+  <div class="proj-hero-left" style="grid-column:1">
+    <div class="crumbs reveal"><a href="../../index.html">首页</a> / 流量新闻识别</div>
+    <h1 class="proj-hero-title reveal" style="--d:.05s">流量新闻特征识别<br>与悬浮球应用</h1>
+    <p class="proj-hero-desc reveal" style="--d:.1s">
+      为悬浮球 APP 构建误导性内容（毒科普 / 养生 / 政策类）识别能力：7.5 万条快手视频
+      标题 + 封面双源特征工程，产出轻量规则引擎交付 APP 集成——纯文本匹配即可实现，不依赖模型。
+    </p>
+    <div class="proj-hero-nums reveal" style="--d:.15s">
+      <div class="proj-hero-num"><b data-count="7.5" data-decimals="1" data-suffix="万">0</b><span>视频样本</span></div>
+      <div class="proj-hero-num"><b data-count="17">0</b><span>封面视觉特征</span></div>
+      <div class="proj-hero-num"><b data-count="34" data-suffix="%">0</b><span>双源告警率</span></div>
+    </div>
+  </div>
+  <div class="proj-hero-visual reveal" style="--d:.12s;grid-column:2">
+    <div class="chart-title" style="font-size:17px">标题 + 封面 OCR 双源联合判定</div>
+    <div class="chart-sub" style="margin-bottom:6px">双源累计计分 ≥ 2 判可疑；「宁可错杀，不可放过」低阈值高召回</div>
+    <div class="judge-flow">
+      <div class="judge-step"><div class="j-no">STEP 1</div><div class="j-name">标题分词匹配</div><div class="j-desc">三档权重种子词 + 正则模式累加计分</div></div>
+      <div class="judge-step"><div class="j-no">STEP 2</div><div class="j-name">封面 OCR 计分</div><div class="j-desc">PaddleOCR 提取文字与标题联合判定</div></div>
+      <div class="judge-step"><div class="j-no">STEP 3</div><div class="j-name">总分 ≥ 2</div><div class="j-desc">判可疑 → APP 弹窗提醒用户</div></div>
+      <div class="judge-step"><div class="j-no">STEP 4</div><div class="j-name">阈值两档</div><div class="j-desc">≥2 高召回 / ≥3 高精度，规则增量更新</div></div>
+    </div>
+    <div class="chart-body" id="alarmBar" style="margin-top:18px"></div>
+  </div>
+</header>
+
+<main class="container">
+
+  <section class="section" style="padding-top:24px">
+    <div class="section-head reveal">
+      <div class="section-kicker">Title Rules</div>
+      <h2 class="section-title">标题侧：三档权重种子词</h2>
+    </div>
+    <div class="rule-cards reveal">
+      <div class="rule">
+        <div class="r-w" style="color:#f87171">WEIGHT 3 · 核心词（+3）</div>
+        <h4>强风险信号</h4>
+        <div class="words">
+          <span class="hot">致癌</span><span class="hot">千万不能吃</span><span class="hot">一口都致命</span><span class="hot">根治</span><span class="hot">通血管</span><span class="hot">降三高</span>
+          <span class="hot">惊天内幕</span><span class="hot">没人敢说</span><span class="hot">账户冻结</span><span class="hot">存款清零</span><span class="hot">防癌</span><span>同食相克</span>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="r-w" style="color:#fbbf24">WEIGHT 2 · 关键词（+2）</div>
+        <h4>套路高频词</h4>
+        <div class="words">
+          <span class="hot">老中医</span><span class="hot">转给爸妈</span><span class="hot">新规落地</span><span class="hot">紧急提醒</span><span class="hot">补发养老金</span><span class="hot">免费领</span>
+          <span>黑心商家</span><span>泪崩</span><span>曝光</span><span>千万别</span><span>高血压</span><span>央视曝光</span><span>仅退款</span><span>躺赚</span>
+        </div>
+      </div>
+      <div class="rule">
+        <div class="r-w" style="color:#38bdf8">WEIGHT 1 · 弱信号词（+1）</div>
+        <h4>背景信号</h4>
+        <div class="words">
+          <span>三高</span><span>养老金</span><span>补贴</span><span>吓人</span><span>可怕</span><span>危言耸听</span><span>每家每户</span><span>这种东西</span><span>赶紧扔</span>
+        </div>
+      </div>
+    </div>
+    <div class="chart-card reveal" style="margin-top:20px">
+      <div class="chart-title">正则套路模式（同套路换词也能命中）</div>
+      <div style="column-count:2;column-gap:28px;">
+        <code class="ruleline">千万[不别] → +3 「千万不能/不要」句式</code>
+        <code class="ruleline">惊天.*内幕 → +3 内幕曝光类</code>
+        <code class="ruleline">养老金.*补发 → +3 养老金类</code>
+        <code class="ruleline">\d+岁以上 → +2 针对老年人类</code>
+        <code class="ruleline">[不别]能.*一起吃 → +2 食物相克类</code>
+        <code class="ruleline">[冻封解].*[结封冻] → +2 冻结类</code>
+        <code class="ruleline">[患查].*癌 → +2 癌症类</code>
+        <code class="ruleline">[三高血糖脂].*[降压降糖] → +2 三高类</code>
+        <code class="ruleline">紧急[通知提醒] → +2 紧急通知类</code>
+        <code class="ruleline">别再[买吃] → +2 劝阻类</code>
+        <code class="ruleline">赶紧[看扔] → +1 催促 / 丢弃类</code>
+        <code class="ruleline">注意[！!] → +1 警示类</code>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:8px">
+    <div class="section-head reveal">
+      <div class="section-kicker">Vision</div>
+      <h2 class="section-title">封面侧：计算机视觉特征管线</h2>
+    </div>
+    <div class="feat-list reveal">
+      <div class="feat">煽动色占比（HSV 高饱和红黄）</div>
+      <div class="feat">文字面积覆盖率</div>
+      <div class="feat">纵向亮度断层</div>
+      <div class="feat">极端黑白占比</div>
+      <div class="feat">拉普拉斯模糊度</div>
+      <div class="feat">标题-OCR Jaccard 相似度</div>
+      <div class="feat">HOG 方向梯度直方图</div>
+      <div class="feat">Canny 边缘密度</div>
+      <div class="feat">颜色聚类 / 水平分带</div>
+      <div class="feat">文字对比度</div>
+      <div class="feat">离群质心距离</div>
+      <div class="feat">… 共 17 项视觉特征</div>
+    </div>
+    <div class="findings reveal" style="margin-top:24px">
+      <div class="finding">
+        <div class="f-tag">特征来源</div>
+        <h4>43200 维颜色指纹聚类</h4>
+        <p>封面统一 360×640 后提取 4×4 网格 × RGB 指纹，K-means 聚类生成色块示意，OCR 文字网格坐标映射。</p>
+      </div>
+      <div class="finding">
+        <div class="f-tag">增量更新</div>
+        <h4>规则库持续演化</h4>
+        <p>人工规则只追加不覆盖：关键词 Top5% 权重排序自动发现遗漏词，PMI 共现扩展变体，N-gram 频繁模式挖掘新套路。</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <p>© 2026 SanZiNEO · 作品集</p>
+    <p><a href="https://github.com/SanZiNEO" target="_blank" rel="noopener">github.com/SanZiNEO ↗</a></p>
+  </div>
+</footer>
+
+<script src="../../assets/js/chart.js"></script>
+<script src="../../assets/js/common.js"></script>
+<script>
+Chart.bar(document.getElementById("alarmBar"), {
+  labels: ["标题 + 封面 OCR 双源", "仅标题"],
+  series: [{ name: "告警率 %", values: [34, 21], color: "#a78bfa" }],
+  height: 220
+});
+</script>
+</body>
+</html>

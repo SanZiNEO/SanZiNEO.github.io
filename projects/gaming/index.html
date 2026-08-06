@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>游戏互动产品创新与商业化探索 · SanZiNEO 作品集</title>
+<meta name="description" content="Minecraft 过场动画模组 ImmersiveCinematics（MIT 开源，双加载器）+ 直播互动商业化系统。">
+<link rel="stylesheet" href="../../assets/css/style.css">
+<style>
+  .arch { display: flex; flex-wrap: wrap; align-items: stretch; gap: 0; }
+  .arch-node {
+    flex: 1 1 200px; min-width: 200px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 18px; transition: all 0.3s;
+  }
+  .arch-node:hover { border-color: rgba(56, 189, 248, 0.4); transform: translateY(-3px); }
+  .arch-node .node-title { font-size: 15px; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .arch-node .node-title .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .arch-node ul { list-style: none; }
+  .arch-node li { font-size: 12.5px; color: var(--text-muted); padding: 3px 0 3px 14px; position: relative; line-height: 1.55; }
+  .arch-node li::before { content: "▸"; position: absolute; left: 0; color: var(--accent); font-size: 11px; top: 5px; }
+  .arch-flow { flex: 0 0 auto; align-self: center; padding: 0 12px; color: var(--accent); font-size: 20px; position: relative; }
+  .arch-flow .line { width: 34px; height: 2px; background: linear-gradient(90deg, transparent, var(--accent), transparent); margin: 4px auto; position: relative; overflow: hidden; }
+  .arch-flow .line::after { content: ""; position: absolute; top: 0; left: -40%; width: 40%; height: 100%; background: #fff; opacity: 0.9; animation: flow-dash 1.4s linear infinite; }
+  @keyframes flow-dash { 0% { left: -40%; } 100% { left: 100%; } }
+  .cap-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 8px; }
+  .cap { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 18px; transition: all 0.3s; }
+  .cap:hover { border-color: rgba(167, 139, 250, 0.45); transform: translateY(-3px); }
+  .cap .cap-icon { font-size: 20px; margin-bottom: 8px; }
+  .cap h4 { font-size: 15px; margin-bottom: 6px; }
+  .cap p { font-size: 13px; color: var(--text-muted); line-height: 1.65; }
+  @media (max-width: 1024px) { .arch-flow { display: none; } }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-logo" href="../../index.html">SanZiNEO</a>
+  <div class="nav-links">
+    <a href="../../index.html#projects">项目</a>
+    <a href="https://github.com/SanZiNEO" target="_blank" rel="noopener">GitHub ↗</a>
+  </div>
+</nav>
+
+<header class="proj-hero">
+  <div class="proj-hero-left" style="grid-column:1">
+    <div class="crumbs reveal"><a href="../../index.html">首页</a> / 游戏互动产品</div>
+    <h1 class="proj-hero-title reveal" style="--d:.05s">Minecraft 过场动画模组<br>与直播互动商业化系统</h1>
+    <p class="proj-hero-desc reveal" style="--d:.1s">
+      一个模组搞定整合包叙事：JSON 脚本或游戏内编辑器制作电影级过场动画，MIT 开源双加载器分发。
+      直播系统让观众实时驱动游戏玩法，两周完成商业验证。「服务端触发 + 客户端播放」双层架构：
+    </p>
+    <div class="proj-hero-nums reveal" style="--d:.15s;grid-template-columns:repeat(3,1fr)">
+      <div class="proj-hero-num"><b data-count="575">0</b><span>开源下载</span></div>
+      <div class="proj-hero-num"><b data-count="6.4" data-decimals="1" data-suffix="万">0</b><span>B站播放</span></div>
+      <div class="proj-hero-num"><b data-count="10000" data-suffix="+">0</b><span>代码行数</span></div>
+    </div>
+    <div class="hero-cta reveal" style="--d:.2s;margin-top:6px">
+      <a class="btn btn-ghost" href="https://github.com/SanZiNEO/ImmersiveCinematics" target="_blank" rel="noopener">开源仓库 ↗</a>
+    </div>
+  </div>
+  <div class="proj-hero-visual reveal" style="--d:.12s;grid-column:2">
+    <div class="arch">
+      <div class="arch-node">
+        <div class="node-title"><span class="dot" style="background:#38bdf8;box-shadow:0 0 8px #38bdf8"></span>服务端触发</div>
+        <ul>
+          <li>16 种触发条件：登录 / 位置 / 进度 / 群系 / 击杀 / 合成 / 交互…</li>
+          <li>OR / AND 组合，通配符匹配</li>
+          <li>单次 / 重复触发，延迟执行</li>
+        </ul>
+      </div>
+      <div class="arch-flow"><div class="line"></div>→</div>
+      <div class="arch-node">
+        <div class="node-title"><span class="dot" style="background:#a78bfa;box-shadow:0 0 8px #a78bfa"></span>客户端播放</div>
+        <ul>
+          <li>6 自由度相机 + 贝塞尔曲线路径</li>
+          <li>六轨时间轴：相机 / 遮幅 / 音频 / 事件 / 覆盖层</li>
+          <li>镜头追踪、呼吸扰动、光影兼容</li>
+        </ul>
+      </div>
+      <div class="arch-flow"><div class="line"></div>→</div>
+      <div class="arch-node">
+        <div class="node-title"><span class="dot" style="background:#34d399;box-shadow:0 0 8px #34d399"></span>游戏内编辑器</div>
+        <ul>
+          <li>可视化时间轴：多选 / 框选 / 拖拽吸附</li>
+          <li>50 步撤销重做、跨轨道剪贴板</li>
+          <li>零代码制作电影级过场</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+
+  <section class="section" style="padding-top:24px">
+    <div class="wide-charts">
+      <div class="chart-card reveal">
+        <div class="chart-title">分平台下载量</div>
+        <div class="chart-sub">CurseForge + Modrinth 双平台分发</div>
+        <div class="chart-body" id="dlChart"></div>
+      </div>
+      <div class="chart-card reveal">
+        <div class="chart-title">B站合集互动构成</div>
+        <div class="chart-sub">收藏 2320 / 点赞 2100 / 投币 423 / 评论 294 / 转发 239</div>
+        <div class="chart-body" id="interactChart"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:8px">
+    <div class="cap-grid reveal">
+      <div class="cap"><div class="cap-icon">🎬</div><h4>叙事能力</h4><p>宽银幕遮幅、画中画 / 图片 / 字幕覆盖层，多脚本排队与打断机制，适配剧情演出与固定视角解谜。</p></div>
+      <div class="cap"><div class="cap-icon">🔊</div><h4>音频系统</h4><p>OpenAL 多音源，关键帧驱动音量与空间位置，淡入淡出 / 循环 / 音高，播放时自动压制游戏背景音乐。</p></div>
+      <div class="cap"><div class="cap-icon">⚙️</div><h4>运行时控制</h4><p>18 项行为标志：可跳过 / 可打断 / 末帧保持 / 键盘鼠标屏蔽 / 7 项独立 HUD 开关 / 暂停感知冻结。</p></div>
+      <div class="cap"><div class="cap-icon">🧩</div><h4>工程化设计</h4><p>schema.json 运行时驱动字段定义，Forge + Fabric 双加载器统一构建，代码量超 10000 行。</p></div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:8px">
+    <div class="section-head reveal">
+      <div class="section-kicker">Commercial</div>
+      <h2 class="section-title">直播互动商业化系统</h2>
+    </div>
+    <div class="arch reveal">
+      <div class="arch-node">
+        <div class="node-title"><span class="dot" style="background:#f472b6;box-shadow:0 0 8px #f472b6"></span>直播间</div>
+        <ul><li>抖音 / B站双平台</li><li>礼物、弹幕、点赞、关注、进场等实时事件</li></ul>
+      </div>
+      <div class="arch-flow"><div class="line"></div>→</div>
+      <div class="arch-node">
+        <div class="node-title"><span class="dot" style="background:#38bdf8;box-shadow:0 0 8px #38bdf8"></span>采集端</div>
+        <ul><li>自研桌面应用（Electron + TS + Vue3）</li><li>9 种玩法触发条件匹配</li></ul>
+      </div>
+      <div class="arch-flow"><div class="line"></div>→</div>
+      <div class="arch-node">
+        <div class="node-title"><span class="dot" style="background:#a78bfa;box-shadow:0 0 8px #a78bfa"></span>指令端</div>
+        <ul><li>通用「信号 → 指令」映射器</li><li>带回执对账的可靠传输</li></ul>
+      </div>
+      <div class="arch-flow"><div class="line"></div>→</div>
+      <div class="arch-node">
+        <div class="node-title"><span class="dot" style="background:#34d399;box-shadow:0 0 8px #34d399"></span>玩法端</div>
+        <ul><li>JSON 剧本驱动：阵营对战 / 塔防 / MOBA</li><li>全生物行为控制、500 级实体成长</li></ul>
+      </div>
+    </div>
+    <div class="findings reveal" style="margin-top:24px">
+      <div class="finding">
+        <div class="f-tag">创新点</div>
+        <h4>数据包驱动替代按键驱动</h4>
+        <p>传统直播互动受键盘按键数量上限约束；数据包驱动让玩法多样性不受物理按键限制。</p>
+      </div>
+      <div class="finding">
+        <div class="f-tag">创新点</div>
+        <h4>全生物行为控制</h4>
+        <p>阵营系统指挥原版与所有模组生物按阵营行动，可仿制皇室战争 / MOBA / 塔防等玩法。</p>
+      </div>
+      <div class="finding">
+        <div class="f-tag">商业验证</div>
+        <h4>上线两周产生实际收入</h4>
+        <p>需求源于真实委托，两周完成小规模商业验证。</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <p>© 2026 SanZiNEO · 作品集</p>
+    <p><a href="https://github.com/SanZiNEO" target="_blank" rel="noopener">github.com/SanZiNEO ↗</a></p>
+  </div>
+</footer>
+
+<script src="../../assets/js/chart.js"></script>
+<script src="../../assets/js/common.js"></script>
+<script>
+Chart.hbar(document.getElementById("dlChart"), {
+  labels: ["CurseForge", "Modrinth"],
+  values: [349, 226],
+  colors: ["#38bdf8", "#a78bfa"],
+  height: 220
+});
+Chart.donut(document.getElementById("interactChart"), {
+  labels: ["收藏", "点赞", "投币", "评论", "转发"],
+  values: [2320, 2100, 423, 294, 239],
+  centerText: "5376",
+  centerLabel: "互动总量"
+});
+</script>
+</body>
+</html>

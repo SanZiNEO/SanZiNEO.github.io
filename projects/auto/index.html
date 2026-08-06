@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>汽车品牌社交媒体用户画像与消费者洞察研究 · SanZiNEO 作品集</title>
+<meta name="description" content="24 个汽车品牌微博消费者画像：7 大维度画像体系 + 10 大兴趣领域渗透模型。">
+<link rel="stylesheet" href="../../assets/css/style.css">
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-logo" href="../../index.html">SanZiNEO</a>
+  <div class="nav-links">
+    <a href="../../index.html#projects">项目</a>
+    <a href="https://github.com/SanZiNEO" target="_blank" rel="noopener">GitHub ↗</a>
+  </div>
+</nav>
+
+<header class="proj-hero">
+  <div class="proj-hero-left" style="grid-column:1">
+    <div class="crumbs reveal"><a href="../../index.html">首页</a> / 汽车画像</div>
+    <h1 class="proj-hero-title reveal" style="--d:.05s">汽车品牌社交媒体<br>用户画像与消费者洞察</h1>
+    <p class="proj-hero-desc reveal" style="--d:.1s">
+      24 个汽车品牌的消费者画像研究——兴趣渗透、性别结构、关注生态，一键切换对比维度。
+    </p>
+    <div class="proj-hero-nums reveal" style="--d:.15s">
+      <div class="proj-hero-num"><b data-count="24">0</b><span>汽车品牌</span></div>
+      <div class="proj-hero-num"><b data-count="7292">0</b><span>评论用户</span></div>
+      <div class="proj-hero-num"><b data-count="110" data-suffix="万+">0</b><span>关注关系</span></div>
+    </div>
+    <div class="brand-picker reveal" id="brandPicker" style="--d:.2s;margin-top:14px"></div>
+    <select class="brand-select reveal" id="brandSelect" style="--d:.24s;margin-top:10px" aria-label="选择品牌">
+      <option value="">+ 添加品牌…</option>
+    </select>
+  </div>
+  <div class="proj-hero-visual reveal" style="--d:.12s;grid-column:2">
+    <div class="tab-bar" id="chartTabs">
+      <button class="tab-btn on" type="button" data-tab="radar">兴趣渗透</button>
+      <button class="tab-btn" type="button" data-tab="gender">性别结构</button>
+      <button class="tab-btn" type="button" data-tab="follow">关注结构</button>
+      <button class="tab-btn" type="button" data-tab="sentiment">情感结构</button>
+      <button class="tab-btn" type="button" data-tab="core">核心用户</button>
+    </div>
+    <div class="big-chart on" id="bigRadar"></div>
+    <div class="big-chart" id="bigGender"></div>
+    <div class="big-chart" id="bigFollow"></div>
+    <div class="big-chart" id="bigSentiment"></div>
+    <div class="big-chart" id="bigCore"></div>
+  </div>
+</header>
+
+<main class="container">
+
+  <section class="section" style="padding-top:8px">
+    <div class="section-head reveal">
+      <div class="section-kicker">Framework</div>
+      <h2 class="section-title">7 大维度画像体系</h2>
+    </div>
+    <div class="interest-strip reveal">
+      <span class="tag">人口属性</span><span class="tag">社交影响力</span><span class="tag">品牌互动</span><span class="tag">兴趣领域</span><span class="tag">关注结构</span><span class="tag">用户价值</span><span class="tag">综合宽表</span>
+      <span class="tag">+ 10 大兴趣领域</span><span class="tag">娱乐明星</span><span class="tag">影视动漫</span><span class="tag">游戏电竞</span><span class="tag">科技数码</span><span class="tag">汽车</span><span class="tag">体育运动</span><span class="tag">财经商业</span><span class="tag">时尚美妆</span><span class="tag">生活美食</span><span class="tag">新闻知识</span>
+    </div>
+    <p class="chapter-body reveal" style="margin-top:12px;max-width:900px">
+      每个品牌独立产出 11 张画像图表；全局 22 张跨品牌对比图表。
+    </p>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <p>© 2026 SanZiNEO · 作品集</p>
+    <p><a href="https://github.com/SanZiNEO" target="_blank" rel="noopener">github.com/SanZiNEO ↗</a></p>
+  </div>
+</footer>
+
+<script src="../../assets/js/chart.js"></script>
+<script src="../../assets/js/data-auto.js"></script>
+<script src="../../assets/js/data-auto2.js"></script>
+<script src="../../assets/js/common.js"></script>
+<script>
+var AD = window.AUTO_DATA;
+var ST = window.AUTO_STATS;
+var palette = ["#38bdf8", "#a78bfa", "#f472b6", "#34d399", "#fbbf24", "#f87171", "#22d3ee"];
+var statOf = {};
+ST.forEach(function (s) { statOf[s.name] = s; });
+var colorOf = {};
+AD.brands.forEach(function (b, i) { colorOf[b.name] = palette[i % palette.length]; });
+
+var activeSet = new Set(["特斯拉", "比亚迪汽车", "小米汽车", "理想汽车"]);
+var current = "radar";
+function activeNames() { return Array.from(activeSet); }
+
+/* 20 品牌市场平均 */
+function avgOf(key) { return +(ST.reduce(function (a, s) { return a + s[key]; }, 0) / ST.length).toFixed(1); }
+var AVG = {
+  malePct: avgOf("malePct"), corePct: avgOf("corePct"),
+  posPct: avgOf("posPct"), negPct: avgOf("negPct"),
+  officialPct: avgOf("officialPct"), kolPct: avgOf("kolPct"), amateurPct: avgOf("amateurPct")
+};
+var AVG_NEUTRAL = +(100 - AVG.posPct - AVG.negPct).toFixed(1);
+
+/* ---- 雷达 ---- */
+var radar = Chart.radarCompare(document.getElementById("bigRadar"), {
+  labels: AD.domains,
+  base: AD.avg.map(function (v) { return v / 100; }),
+  brands: AD.brands.map(function (b, i) {
+    return { name: b.name, values: b.values.map(function (v) { return v / 100; }), color: colorOf[b.name] };
+  }),
+  active: activeNames(),
+  width: 800,
+  height: 560
+});
+
+/* ---- 其他维度图（动态品牌 + 市场平均参照） ---- */
+var gender = Chart.bar(document.getElementById("bigGender"), {
+  labels: activeNames(),
+  series: [{ name: "男性占比 %", values: activeNames().map(function (n) { return statOf[n].malePct; }), color: "#38bdf8" }],
+  baseline: { value: AVG.malePct, label: "市场平均 " + AVG.malePct + "%" },
+  clean: true, height: 420
+});
+var follow = Chart.bar(document.getElementById("bigFollow"), {
+  labels: ["市场平均"].concat(activeNames()),
+  series: [
+    { name: "官方账号 %", values: [AVG.officialPct].concat(activeNames().map(function (n) { return statOf[n].officialPct; })), color: "#38bdf8" },
+    { name: "个人KOL %", values: [AVG.kolPct].concat(activeNames().map(function (n) { return statOf[n].kolPct; })), color: "#a78bfa" },
+    { name: "素人 %", values: [AVG.amateurPct].concat(activeNames().map(function (n) { return statOf[n].amateurPct; })), color: "#5d6b85" }
+  ],
+  clean: true, height: 420
+});
+var sentiment = Chart.bar(document.getElementById("bigSentiment"), {
+  labels: ["市场平均"].concat(activeNames()),
+  series: [
+    { name: "中性 %", values: [AVG_NEUTRAL].concat(activeNames().map(function (n) { return +(100 - statOf[n].posPct - statOf[n].negPct).toFixed(1); })), color: "#5d6b85" },
+    { name: "正面 %", values: [AVG.posPct].concat(activeNames().map(function (n) { return statOf[n].posPct; })), color: "#34d399" },
+    { name: "负面 %", values: [AVG.negPct].concat(activeNames().map(function (n) { return statOf[n].negPct; })), color: "#f87171" }
+  ],
+  clean: true, height: 420
+});
+var core = Chart.bar(document.getElementById("bigCore"), {
+  labels: activeNames(),
+  series: [{ name: "核心用户占比 %", values: activeNames().map(function (n) { return statOf[n].corePct; }), color: "#a78bfa" }],
+  baseline: { value: AVG.corePct, label: "市场平均 " + AVG.corePct + "%" },
+  clean: true, height: 420
+});
+
+function refreshCurrent() {
+  var names = activeNames();
+  if (current === "radar") radar.update(names);
+  else if (current === "gender") gender.update(names, [{ name: "男性占比 %", values: names.map(function (n) { return statOf[n].malePct; }), color: "#38bdf8" }]);
+  else if (current === "follow") follow.update(["市场平均"].concat(names), [
+    { name: "官方账号 %", values: [AVG.officialPct].concat(names.map(function (n) { return statOf[n].officialPct; })), color: "#38bdf8" },
+    { name: "个人KOL %", values: [AVG.kolPct].concat(names.map(function (n) { return statOf[n].kolPct; })), color: "#a78bfa" },
+    { name: "素人 %", values: [AVG.amateurPct].concat(names.map(function (n) { return statOf[n].amateurPct; })), color: "#5d6b85" }
+  ]);
+  else if (current === "sentiment") sentiment.update(["市场平均"].concat(names), [
+    { name: "中性 %", values: [AVG_NEUTRAL].concat(names.map(function (n) { return +(100 - statOf[n].posPct - statOf[n].negPct).toFixed(1); })), color: "#5d6b85" },
+    { name: "正面 %", values: [AVG.posPct].concat(names.map(function (n) { return statOf[n].posPct; })), color: "#34d399" },
+    { name: "负面 %", values: [AVG.negPct].concat(names.map(function (n) { return statOf[n].negPct; })), color: "#f87171" }
+  ]);
+  else if (current === "core") core.update(names, [{ name: "核心用户占比 %", values: names.map(function (n) { return statOf[n].corePct; }), color: "#a78bfa" }]);
+}
+
+/* ---- 品牌选择 ---- */
+var picker = document.getElementById("brandPicker");
+var select = document.getElementById("brandSelect");
+var featured = ["特斯拉", "比亚迪汽车", "小米汽车", "理想汽车", "吉利汽车", "奥迪", "大众汽车", "鸿蒙智行"];
+var chipEls = {};
+AD.brands.forEach(function (b) {
+  var chip = document.createElement("button");
+  chip.type = "button";
+  chip.className = "brand-chip" + (activeSet.has(b.name) ? " on" : "");
+  chip.textContent = b.name;
+  chip.addEventListener("click", function () {
+    if (activeSet.has(b.name)) { activeSet.delete(b.name); chip.classList.remove("on"); }
+    else { activeSet.add(b.name); chip.classList.add("on"); }
+    refreshCurrent();
+  });
+  chipEls[b.name] = chip;
+  if (featured.indexOf(b.name) >= 0) picker.appendChild(chip);
+  var opt = document.createElement("option");
+  opt.value = b.name;
+  opt.textContent = b.name;
+  select.appendChild(opt);
+});
+select.addEventListener("change", function () {
+  var nm = select.value;
+  if (nm && !activeSet.has(nm)) {
+    activeSet.add(nm);
+    refreshCurrent();
+    if (chipEls[nm]) chipEls[nm].classList.add("on");
+    if (chipEls[nm].parentElement !== picker) picker.appendChild(chipEls[nm]);
+  }
+  select.value = "";
+});
+
+/* ---- 标签卡切换 ---- */
+var tabs = document.getElementById("chartTabs");
+var bigs = { radar: document.getElementById("bigRadar"), gender: document.getElementById("bigGender"), follow: document.getElementById("bigFollow"), sentiment: document.getElementById("bigSentiment"), core: document.getElementById("bigCore") };
+tabs.addEventListener("click", function (e) {
+  var btn = e.target.closest(".tab-btn");
+  if (!btn) return;
+  Array.prototype.forEach.call(tabs.children, function (b) { b.classList.remove("on"); });
+  btn.classList.add("on");
+  current = btn.getAttribute("data-tab");
+  Object.keys(bigs).forEach(function (k) { bigs[k].classList.toggle("on", k === current); });
+  refreshCurrent();
+});
+</script>
+</body>
+</html>

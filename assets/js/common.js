@@ -77,9 +77,41 @@
     }
   }
 
+  /* ---------- 顶部滚动进度条 ---------- */
+  function initScrollProgress() {
+    var bar = document.createElement("div");
+    bar.className = "scroll-progress";
+    document.body.appendChild(bar);
+    var ticking = false;
+    function update() {
+      var st = window.scrollY || document.documentElement.scrollTop;
+      var h = document.documentElement.scrollHeight - window.innerHeight;
+      bar.style.width = (h > 0 ? Math.min(100, st / h * 100) : 0) + "%";
+      ticking = false;
+    }
+    window.addEventListener("scroll", function () {
+      if (!ticking) { ticking = true; requestAnimationFrame(update); }
+    }, { passive: true });
+    update();
+  }
+
+  /* ---------- 返回顶部按钮 ---------- */
+  function initBackTop() {
+    var btn = document.createElement("button");
+    btn.className = "to-top"; btn.type = "button"; btn.setAttribute("aria-label", "返回顶部");
+    btn.textContent = "↑";
+    document.body.appendChild(btn);
+    function toggle() { btn.classList.toggle("show", (window.scrollY || document.documentElement.scrollTop) > 600); }
+    window.addEventListener("scroll", toggle, { passive: true });
+    btn.addEventListener("click", function () { window.scrollTo({ top: 0, behavior: "smooth" }); });
+    toggle();
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
     initReveal();
     initCounters();
     initParticles();
+    initScrollProgress();
+    initBackTop();
   });
 })();

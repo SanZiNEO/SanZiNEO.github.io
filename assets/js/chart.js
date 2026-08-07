@@ -9,6 +9,7 @@
 
   var PALETTE = ["#7FA5B8", "#BEA0C8", "#D19B9B", "#8EB5AD", "#DBC094", "#CF9292", "#8FB4C4"];
   var NS = "http://www.w3.org/2000/svg";
+  var REDUCED = typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   /* ---------- 工具 ---------- */
   function E(tag, attrs, children) {
@@ -201,12 +202,17 @@
             var hh = v / maxV * ih;
             var y = PT + ih - acc - hh;
             var rect = E("rect", {
-              x: cx - barW / 2, y: y, width: barW, height: hh, rx: 2,
+              x: cx - barW / 2, y: PT + ih, width: barW, height: 0, rx: 2,
               fill: s.color, opacity: 0.88,
               "data-tip": "<span class='tip-k'>" + s.name + "</span>：" + fmt(v) + (opts.unit || "") + "<br>" + lb
             });
-            rect.appendChild(E("animate", { attributeName: "height", from: 0, to: hh, dur: "0.7s", begin: (0.1 + i * 0.05) + "s", fill: "freeze" }));
-            rect.appendChild(E("animate", { attributeName: "y", from: PT + ih, to: y, dur: "0.7s", begin: (0.1 + i * 0.05) + "s", fill: "freeze" }));
+            if (REDUCED) {
+              rect.setAttribute("height", hh);
+              rect.setAttribute("y", y);
+            } else {
+              rect.appendChild(E("animate", { attributeName: "height", from: 0, to: hh, dur: "0.7s", begin: (0.1 + i * 0.05) + "s", fill: "freeze" }));
+              rect.appendChild(E("animate", { attributeName: "y", from: PT + ih, to: y, dur: "0.7s", begin: (0.1 + i * 0.05) + "s", fill: "freeze" }));
+            }
             barsLayer.appendChild(rect);
             acc += hh;
           });
@@ -217,12 +223,17 @@
             var x = cx - (barW * series.length) / 2 + barW * si;
             var y = PT + ih - hh;
             var rect = E("rect", {
-              x: x, y: y, width: barW - 3, height: hh, rx: 2,
+              x: x, y: PT + ih, width: barW - 3, height: 0, rx: 2,
               fill: s.color, opacity: 0.88,
               "data-tip": "<span class='tip-k'>" + s.name + "</span>：" + fmt(v) + (opts.unit || "") + "<br>" + lb
             });
-            rect.appendChild(E("animate", { attributeName: "height", from: 0, to: hh, dur: "0.7s", begin: (0.1 + i * 0.06 + si * 0.04) + "s", fill: "freeze" }));
-            rect.appendChild(E("animate", { attributeName: "y", from: PT + ih, to: y, dur: "0.7s", begin: (0.1 + i * 0.06 + si * 0.04) + "s", fill: "freeze" }));
+            if (REDUCED) {
+              rect.setAttribute("height", hh);
+              rect.setAttribute("y", y);
+            } else {
+              rect.appendChild(E("animate", { attributeName: "height", from: 0, to: hh, dur: "0.7s", begin: (0.1 + i * 0.06 + si * 0.04) + "s", fill: "freeze" }));
+              rect.appendChild(E("animate", { attributeName: "y", from: PT + ih, to: y, dur: "0.7s", begin: (0.1 + i * 0.06 + si * 0.04) + "s", fill: "freeze" }));
+            }
             barsLayer.appendChild(rect);
           });
         }
@@ -292,11 +303,15 @@
         svg.appendChild(E("line", { x1: PL, y1: y, x2: W - PR, y2: y, stroke: "rgba(31,31,33,0.04)" }));
       }
       var rect = E("rect", {
-        x: PL, y: y - rowH / 2, width: bw, height: rowH, rx: rowH / 2,
+        x: PL, y: y - rowH / 2, width: 0, height: rowH, rx: rowH / 2,
         fill: color, opacity: 0.9,
         "data-tip": "<span class='tip-k'>" + lb + "</span>：" + fmt(v) + (opts.unit || "")
       });
-      rect.appendChild(E("animate", { attributeName: "width", from: 0, to: bw, dur: "0.7s", begin: (0.1 + i * 0.07) + "s", fill: "freeze" }));
+      if (REDUCED) {
+        rect.setAttribute("width", bw);
+      } else {
+        rect.appendChild(E("animate", { attributeName: "width", from: 0, to: bw, dur: "0.7s", begin: (0.1 + i * 0.07) + "s", fill: "freeze" }));
+      }
       svg.appendChild(rect);
       svg.appendChild(E("text", {
         x: PL + bw + 8, y: y + 4, "font-size": 12, fill: "#1F1F21", "font-family": "var(--font-mono)"
@@ -352,8 +367,12 @@
       var areaPts = (PL + "," + (PT + ih)) + " " + pts + " " + (X(n - 1) + "," + (PT + ih));
 
       if (opts.area !== false) {
-        var area = E("polygon", { points: areaPts, fill: s.color, opacity: 0.12 });
-        area.appendChild(E("animate", { attributeName: "opacity", from: 0, to: 0.12, dur: "1.2s", begin: (0.4 + si * 0.15) + "s", fill: "freeze" }));
+        var area = E("polygon", { points: areaPts, fill: s.color, opacity: 0 });
+        if (REDUCED) {
+          area.setAttribute("opacity", "0.12");
+        } else {
+          area.appendChild(E("animate", { attributeName: "opacity", from: 0, to: 0.12, dur: "1.2s", begin: (0.4 + si * 0.15) + "s", fill: "freeze" }));
+        }
         svg.appendChild(area);
       }
 
@@ -367,10 +386,14 @@
 
       s.values.forEach(function (v, i) {
         var c = E("circle", {
-          cx: X(i), cy: Y(v), r: 3.5, fill: s.color,
+          cx: X(i), cy: Y(v), r: 3.5, fill: s.color, opacity: 0,
           "data-tip": "<span class='tip-k'>" + s.name + "</span>：" + fmt(v) + (opts.unit || "") + "<br>" + labels[i]
         });
-        c.appendChild(E("animate", { attributeName: "opacity", from: 0, to: 1, dur: "0.3s", begin: (0.5 + i * 0.03 + si * 0.15) + "s", fill: "freeze" }));
+        if (REDUCED) {
+          c.setAttribute("opacity", "1");
+        } else {
+          c.appendChild(E("animate", { attributeName: "opacity", from: 0, to: 1, dur: "0.3s", begin: (0.5 + i * 0.03 + si * 0.15) + "s", fill: "freeze" }));
+        }
         svg.appendChild(c);
       });
     });
@@ -420,17 +443,25 @@
     /* 数据多边形 */
     series.forEach(function (s, si) {
       var pts = s.values.map(function (v, i) { return P(i, v / maxV * R).join(","); }).join(" ");
-      var poly = E("polygon", { points: pts, fill: s.color, opacity: 0.18, stroke: s.color, "stroke-width": 2, "stroke-linejoin": "round" });
-      poly.appendChild(E("animate", { attributeName: "opacity", from: 0, to: 0.18, dur: "0.8s", begin: (0.2 + si * 0.2) + "s", fill: "freeze" }));
+      var poly = E("polygon", { points: pts, fill: s.color, opacity: 0, stroke: s.color, "stroke-width": 2, "stroke-linejoin": "round" });
+      if (REDUCED) {
+        poly.setAttribute("opacity", "0.18");
+      } else {
+        poly.appendChild(E("animate", { attributeName: "opacity", from: 0, to: 0.18, dur: "0.8s", begin: (0.2 + si * 0.2) + "s", fill: "freeze" }));
+      }
       svg.appendChild(poly);
 
       s.values.forEach(function (v, i) {
         var p = P(i, v / maxV * R);
         var c = E("circle", {
-          cx: p[0], cy: p[1], r: 3.5, fill: s.color,
+          cx: p[0], cy: p[1], r: 3.5, fill: s.color, opacity: 0,
           "data-tip": "<span class='tip-k'>" + s.name + "</span>：" + fmt(v, 1) + "<br>" + labels[i]
         });
-        c.appendChild(E("animate", { attributeName: "opacity", from: 0, to: 1, dur: "0.3s", begin: (0.6 + si * 0.2) + "s", fill: "freeze" }));
+        if (REDUCED) {
+          c.setAttribute("opacity", "1");
+        } else {
+          c.appendChild(E("animate", { attributeName: "opacity", from: 0, to: 1, dur: "0.3s", begin: (0.6 + si * 0.2) + "s", fill: "freeze" }));
+        }
         svg.appendChild(c);
       });
     });
@@ -482,10 +513,14 @@
           x: rowLab + cellW * ci + 1, y: colLab + cellH * ri + 1,
           width: cellW - 2, height: cellH - 2, rx: 4,
           fill: v === 0 ? "rgba(31,31,33,0.03)" : mixColor(c1, c2, t),
-          stroke: "rgba(31,31,33,0.05)",
+          stroke: "rgba(31,31,33,0.05)", opacity: 0,
           "data-tip": "<span class='tip-k'>" + r + " × " + c + "</span>：" + fmt(v) + (opts.unit || "")
         });
-        rect.appendChild(E("animate", { attributeName: "opacity", from: 0, to: 1, dur: "0.4s", begin: (0.15 + (ri * cols.length + ci) * 0.02) + "s", fill: "freeze" }));
+        if (REDUCED) {
+          rect.setAttribute("opacity", "1");
+        } else {
+          rect.appendChild(E("animate", { attributeName: "opacity", from: 0, to: 1, dur: "0.4s", begin: (0.15 + (ri * cols.length + ci) * 0.02) + "s", fill: "freeze" }));
+        }
         svg.appendChild(rect);
         if (v > 0) {
           svg.appendChild(E("text", {
@@ -498,6 +533,26 @@
 
     bindTip(el, svg);
     el.appendChild(svg);
+  }
+
+  /* 中心数字滚动：从 0 滚动到目标（保留前后缀，如 "57.9万"） */
+  function countUpText(el, finalStr, delay) {
+    var m = String(finalStr).match(/-?\d+(\.\d+)?/);
+    if (!m) { el.textContent = finalStr; return; }
+    var target = parseFloat(m[0]);
+    var decimals = (m[0].split(".")[1] || "").length;
+    var prefix = String(finalStr).slice(0, m.index);
+    var suffix = String(finalStr).slice(m.index + m[0].length);
+    var t0 = null, dur = 1100;
+    function frame(t) {
+      if (!t0) t0 = t;
+      var p = Math.min((t - t0 - delay * 1000) / dur, 1);
+      if (p <= 0) { requestAnimationFrame(frame); return; }
+      var e = 1 - Math.pow(1 - p, 3);
+      el.textContent = prefix + (target * e).toFixed(decimals) + suffix;
+      if (p < 1) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
   }
 
   /* ============================================================
@@ -514,6 +569,11 @@
     var b = base({ width: W, height: H });
     var svg = b.svg;
 
+    /* 轨道环（浅色整环，生长动画的底） */
+    if (!opts.noTrack) {
+      svg.appendChild(E("circle", { cx: cx, cy: cy, r: R, fill: "none", stroke: "rgba(31,31,33,0.07)", "stroke-width": sw, transform: "rotate(-90 " + cx + " " + cy + ")" }));
+    }
+
     var acc = 0;
     values.forEach(function (v, i) {
       var frac = total > 0 ? v / total : 0;
@@ -523,18 +583,25 @@
       var c = colors[i % colors.length];
       var seg = E("circle", {
         cx: cx, cy: cy, r: R, fill: "none", stroke: c, "stroke-width": sw,
-        "stroke-dasharray": len + " " + (C - len),
+        "stroke-dasharray": "0 " + C,
         "stroke-dashoffset": offset, "stroke-linecap": "butt", opacity: 0.92,
         transform: "rotate(-90 " + cx + " " + cy + ")",
         "data-tip": "<span class='tip-k'>" + labels[i] + "</span>：" + fmt(v) + "（" + (frac * 100).toFixed(1) + "%）"
       });
-      seg.appendChild(E("animate", { attributeName: "stroke-dashoffset", from: -acc * C, to: offset, dur: "0.9s", begin: (0.15 + i * 0.08) + "s", fill: "freeze" }));
+      if (REDUCED) {
+        seg.setAttribute("stroke-dasharray", len + " " + (C - len));
+      } else {
+        seg.appendChild(E("animate", { attributeName: "stroke-dasharray", from: "0 " + C, to: len + " " + (C - len), dur: "0.9s", begin: (0.15 + i * 0.15) + "s", fill: "freeze" }));
+      }
       svg.appendChild(seg);
     });
 
     if (opts.centerText) {
-      svg.appendChild(E("text", { x: cx, y: cy - 6, "text-anchor": "middle", "font-size": 24, "font-weight": 800, fill: "#1F1F21", "font-family": "var(--font-mono)" }, [opts.centerText]));
+      var ct = E("text", { x: cx, y: cy - 6, "text-anchor": "middle", "font-size": 24, "font-weight": 800, fill: "#1F1F21", "font-family": "var(--font-mono)" }, ["0"]);
+      svg.appendChild(ct);
       svg.appendChild(E("text", { x: cx, y: cy + 16, "text-anchor": "middle", "font-size": 11, fill: "#4B4B4E" }, [opts.centerLabel || ""]));
+      if (REDUCED) { ct.textContent = opts.centerText; }
+      else { countUpText(ct, opts.centerText, 0.4 + values.length * 0.15); }
     }
 
     /* 图例（右侧，单行：标签 + 数值） */
@@ -642,17 +709,25 @@
       var pts = br.values.map(function (v, i) { return P(i, sq(v)).join(","); }).join(" ");
       var g = E("g", { "data-brand": name });
       var poly = E("polygon", {
-        points: pts, fill: color, "fill-opacity": 0.14, stroke: color, "stroke-width": 2.6, "stroke-linejoin": "round"
+        points: pts, fill: color, "fill-opacity": 0, stroke: color, "stroke-width": 2.6, "stroke-linejoin": "round"
       });
-      poly.appendChild(E("animate", { attributeName: "fill-opacity", from: 0, to: 0.14, dur: "0.6s", begin: "0.1s", fill: "freeze" }));
+      if (REDUCED) {
+        poly.setAttribute("fill-opacity", "0.14");
+      } else {
+        poly.appendChild(E("animate", { attributeName: "fill-opacity", from: 0, to: 0.14, dur: "0.6s", begin: "0.1s", fill: "freeze" }));
+      }
       g.appendChild(poly);
       br.values.forEach(function (v, i) {
         var p = P(i, sq(v));
         var c = E("circle", {
-          cx: p[0], cy: p[1], r: 3.4, fill: color, stroke: "rgba(246,244,239,0.95)", "stroke-width": 1.2,
+          cx: p[0], cy: p[1], r: 3.4, fill: color, stroke: "rgba(246,244,239,0.95)", "stroke-width": 1.2, opacity: 0,
           "data-tip": "<span class='tip-k'>" + name + "</span> · " + labels[i] + "<br>渗透 " + (v * 100).toFixed(1) + "% vs 平均 " + (baseVals[i] * 100).toFixed(1) + "%（平方分 " + Math.round(sq(v)) + " / " + Math.round(sq(baseVals[i])) + "）"
         });
-        c.appendChild(E("animate", { attributeName: "opacity", from: 0, to: 1, dur: "0.3s", begin: "0.35s", fill: "freeze" }));
+        if (REDUCED) {
+          c.setAttribute("opacity", "1");
+        } else {
+          c.appendChild(E("animate", { attributeName: "opacity", from: 0, to: 1, dur: "0.3s", begin: "0.35s", fill: "freeze" }));
+        }
         g.appendChild(c);
       });
       dynLayer.appendChild(g);
@@ -694,6 +769,45 @@
     };
   }
 
+  /* ---------- 懒渲染：进入视口才渲染+播入场动画 ---------- */
+  function lazy(el, build) {
+    var api = null, pending = [];
+    function ensure() {
+      if (!api) {
+        api = build();
+        pending.forEach(function (p) { p[0].apply(null, p[1]); });
+        pending = [];
+      }
+      return api;
+    }
+    function inView() {
+      var r = el.getBoundingClientRect();
+      var vh = window.innerHeight || document.documentElement.clientHeight;
+      return r.top < vh && r.bottom > 0;
+    }
+    if (inView() || !("IntersectionObserver" in window)) return ensure();
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (en) { if (en.isIntersecting) { io.disconnect(); ensure(); } });
+    }, { threshold: 0.1, rootMargin: "40px 0px" });
+    io.observe(el);
+    return {
+      update: function () {
+        var args = Array.prototype.slice.call(arguments);
+        if (api) return api.update.apply(api, args);
+        pending.push([function (a) { return api.update.apply(api, a); }, args]);
+      }
+    };
+  }
+
   /* ---------- 导出 ---------- */
-  global.Chart = { bar: bar, hbar: hbar, line: line, radar: radar, radarCompare: radarCompare, heatmap: heatmap, donut: donut, tagcloud: tagcloud };
+  global.Chart = {
+    bar: function (el, opts) { return lazy(el, function () { return bar(el, opts); }); },
+    hbar: function (el, opts) { return lazy(el, function () { return hbar(el, opts); }); },
+    line: function (el, opts) { return lazy(el, function () { return line(el, opts); }); },
+    radar: function (el, opts) { return lazy(el, function () { return radar(el, opts); }); },
+    radarCompare: function (el, opts) { return lazy(el, function () { return radarCompare(el, opts); }); },
+    heatmap: function (el, opts) { return lazy(el, function () { return heatmap(el, opts); }); },
+    donut: function (el, opts) { return lazy(el, function () { return donut(el, opts); }); },
+    tagcloud: function (el, opts) { return lazy(el, function () { return tagcloud(el, opts); }); }
+  };
 })(window);

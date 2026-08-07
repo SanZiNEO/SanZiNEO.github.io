@@ -17,7 +17,7 @@
   code.ruleline { display: block; font-family: var(--font-mono); font-size: 12.5px; color: #7FA5B8; background: rgba(127,165,184,0.06); border: 1px solid rgba(127,165,184,0.15); border-radius: 6px; padding: 4px 10px; margin: 3px 0; }
   /* 识别规则：标题侧规则卡 */
   /* magpie hero 内容限宽居中（背景全屏延伸） */
-  .proj-hero { max-width: 1400px; margin: 0 auto; }
+  .proj-hero { max-width: 2560px; margin: 0 auto; }
   /* 全页虚化封面背景（fixed，当前轮播封面放大模糊） */
   body.magpie-bg .magpie-page-bg,
   body.magpie-bg .magpie-page-mask {
@@ -41,18 +41,36 @@
   body.magpie-bg .footer {
     position: relative; z-index: 1;
   }
-  /* 封面轮播（竖屏 9:16 适配） */
+  /* 封面轮播（无缝循环 coverflow：左右并列——文字靠左，轮播靠右填满，中间大两侧小+模糊） */
+  .proj-hero { grid-template-columns: minmax(280px, 340px) minmax(0, 1fr); }
   .magpie-slider {
     position: relative; overflow: hidden;
-    width: 420px; max-width: 100%;
-    border-radius: var(--radius); border: 1px solid var(--border);
-    background: var(--bg-soft); box-shadow: var(--shadow);
+    width: 100%;
+    border-radius: var(--radius);
+    background: transparent;
+    border: none;
+    box-shadow: 0 0 60px rgba(127, 165, 184, 0.12);
   }
   .proj-hero-visual .magpie-slider { align-self: center; }
-  .magpie-slide { flex: 0 0 100%; min-width: 100%; position: relative; aspect-ratio: 9 / 16; max-height: calc(100vh - var(--nav-h) - 220px); }
-  .magpie-track { display: flex; transition: transform 0.65s cubic-bezier(0.2, 0.6, 0.2, 1); }
-  .magpie-slide { flex: 0 0 100%; min-width: 100%; position: relative; aspect-ratio: 9 / 16; }
+  .magpie-track { display: flex; gap: 14px; transition: transform 0.65s cubic-bezier(0.2, 0.6, 0.2, 1); }
+  .magpie-slide {
+    flex: 0 0 360px; min-width: 360px; position: relative;
+    aspect-ratio: 9 / 16; overflow: hidden;
+    border-radius: var(--radius-sm);
+    transform: scale(0.5); opacity: 0.28; filter: blur(6px);
+    transition: transform 0.65s cubic-bezier(0.2, 0.6, 0.2, 1), opacity 0.65s, filter 0.65s;
+  }
+  .magpie-slide.d2 { transform: scale(0.66); opacity: 0.45; filter: blur(4px); }
+  .magpie-slide.near { transform: scale(0.82); opacity: 0.72; filter: blur(2px); }
+  .magpie-slide.on { transform: scale(1); opacity: 1; z-index: 2; filter: blur(0); }
   .magpie-slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  @media (max-height: 880px) {
+    .magpie-slide { flex: 0 0 300px; min-width: 300px; }
+  }
+  @media (max-width: 720px) {
+    .magpie-slider { width: 96vw; }
+    .magpie-slide { flex: 0 0 62vw; min-width: 62vw; }
+  }
 </style>
 </head>
 <body class="magpie-bg">
@@ -140,31 +158,72 @@
 <script src="../../assets/js/chart.js"></script>
 <script src="../../assets/js/common.js"></script>
 <script>
-/* 封面轮播（自动 + 手动） */
+/* 封面轮播（无缝循环 coverflow：中间大两侧小+模糊，自动 + hover 暂停） */
 (function () {
   var track = document.getElementById("magpieTrack");
   if (!track) return;
-  var slides = track.children.length;
-  var dotsBox = document.getElementById("magpieDots");
+  var slider = document.getElementById("magpieSlider");
   var stageBg = document.getElementById("magpiePageBg");
-  var idx = 0, timer = null;
+  var all = Array.prototype.slice.call(track.children);
+  var N = all.length;
+  if (N < 2) return;
+  var idx = 2, timer = null;
+  var GAP = 14;
+
+  /* 首尾多张克隆 → 无缝循环时五张画面始终填满：
+     左侧预置 2 张（最后两张）、右侧预置 3 张（前三张），真实卡索引区间 [2, N+1] */
+  for (var k = 2; k >= 1; k--) track.insertBefore(all[N - k].cloneNode(true), track.firstChild);
+  for (var m = 0; m < 3; m++) track.appendChild(all[m].cloneNode(true));
+  var slides = Array.prototype.slice.call(track.children); /* N+5，含首尾克隆 */
 
   function setBg(n) {
     if (!stageBg) return;
-    var img = track.children[n].querySelector("img");
+    var img = all[n].querySelector("img");
     if (img) stageBg.style.backgroundImage = "url('" + img.getAttribute("src") + "')";
   }
-  function go(n) {
-    idx = (n + slides) % slides;
-    track.style.transform = "translateX(-" + idx * 100 + "%)";
-    setBg(idx);
+  function paint(displayIdx, animated) {
+    var s = all[0];
+    var SW = s ? s.offsetWidth : 360;
+    var sliderW = slider.offsetWidth;
+    var x = displayIdx * (SW + GAP) - (sliderW - SW) / 2;
+    var t = animated ? "" : "none";
+    track.style.transition = t;
+    for (var i = 0; i < slides.length; i++) {
+      /* 跳回（animated=false）时禁用卡片过渡，状态瞬间切换，避免缩放闪烁 */
+      slides[i].style.transition = t;
+      var d = Math.abs(i - displayIdx);
+      slides[i].classList.toggle("on", i === displayIdx);
+      slides[i].classList.toggle("near", d === 1);
+      slides[i].classList.toggle("d2", d === 2);
+    }
+    track.style.transform = "translateX(" + (-x) + "px)";
   }
-  function auto() { timer = setInterval(function () { go(idx + 1); }, 4000); }
+  function go() {
+    idx++;
+    paint(idx, true);
+    setBg((idx - 2 + N) % N);
+    if (idx >= N + 2) {
+      /* 滑到尾部克隆首图：过渡一结束立即静默跳回真实首图（无感无缝） */
+      var jumped = false;
+      function jumpBack() {
+        if (jumped) return;
+        jumped = true;
+        track.removeEventListener("transitionend", onEnd);
+        idx = 2;
+        paint(idx, false);
+      }
+      function onEnd() { jumpBack(); }
+      track.addEventListener("transitionend", onEnd);
+      setTimeout(jumpBack, 900); /* 兜底：过渡事件未触发（如后台标签页）时也跳回 */
+    }
+  }
+  function auto() { timer = setInterval(go, 4000); }
   function stop() { if (timer) { clearInterval(timer); timer = null; } }
-  var slider = document.getElementById("magpieSlider");
   slider.addEventListener("mouseenter", stop);
   slider.addEventListener("mouseleave", auto);
-  go(0);
+  window.addEventListener("resize", function () { paint(idx, false); });
+  paint(2, false);
+  setBg(0);
   auto();
 })();
 </script>

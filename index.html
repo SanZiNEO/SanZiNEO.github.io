@@ -53,8 +53,8 @@
 
       <a class="pcard reveal" href="projects/gaming/index.html" style="--d:.02s">
         <img class="pcard-img" src="assets/images/gaming.png" alt="游戏互动产品">
-        <h3>游戏互动产品创新与商业化探索</h3>
-        <p class="pcard-desc">Minecraft 过场动画模组 + 直播互动商业化系统，从需求发现到开源分发、商业验证的全流程。</p>
+        <h3>游戏互动产品创新与直播互动系统</h3>
+        <p class="pcard-desc">Minecraft 过场动画模组 + 直播互动系统，从需求发现到开源分发、商业验证的全流程。</p>
         <div class="pcard-foot"><span class="pcard-arrow">→</span></div>
       </a>
 
@@ -119,7 +119,12 @@
     for (var i = 0; i < slides.length; i++) {
       slides[i].classList.toggle("on", i === idx);
     }
-    if (hint) hint.textContent = names[idx];
+    if (hint) {
+      hint.textContent = names[idx];
+      hint.classList.remove("pop");
+      void hint.offsetWidth;
+      hint.classList.add("pop");
+    }
   }
 
   function auto() { timer = setInterval(function () { go(idx + 1); }, 5000); }

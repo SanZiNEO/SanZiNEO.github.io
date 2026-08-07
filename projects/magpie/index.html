@@ -117,7 +117,7 @@
   <section class="section" style="padding-top:8px">
     <div class="section-head reveal">
       <div class="section-kicker">Vision</div>
-      <h2 class="section-title">封面侧：计算机视觉特征管线</h2>
+      <h2 class="section-title">封面侧：视觉特征</h2>
     </div>
     <div class="feat-list reveal">
       <div class="feat">煽动色占比（HSV 高饱和红黄）</div>
@@ -132,18 +132,6 @@
       <div class="feat">文字对比度</div>
       <div class="feat">离群质心距离</div>
       <div class="feat">… 共 17 项视觉特征</div>
-    </div>
-    <div class="findings reveal" style="margin-top:24px">
-      <div class="finding">
-        <div class="f-tag">特征来源</div>
-        <h4>43200 维颜色指纹聚类</h4>
-        <p>封面统一 360×640 后提取 4×4 网格 × RGB 指纹，K-means 聚类生成色块示意，OCR 文字网格坐标映射。</p>
-      </div>
-      <div class="finding">
-        <div class="f-tag">增量更新</div>
-        <h4>规则库持续演化</h4>
-        <p>人工规则只追加不覆盖：关键词 Top5% 权重排序自动发现遗漏词，PMI 共现扩展变体，N-gram 频繁模式挖掘新套路。</p>
-      </div>
     </div>
   </section>
 

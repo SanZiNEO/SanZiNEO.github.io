@@ -9,12 +9,12 @@
 <style>
   .rule-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
   .rule { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 18px; transition: all 0.3s; }
-  .rule:hover { transform: translateY(-3px); border-color: rgba(56,189,248,0.4); }
+  .rule:hover { transform: translateY(-3px); border-color: rgba(127,165,184,0.4); }
   .rule h4 { font-size: 15px; margin-bottom: 8px; }
   .rule .words { display: flex; flex-wrap: wrap; gap: 5px; }
-  .rule .words span { font-size: 11.5px; padding: 2px 8px; border-radius: 6px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text-muted); }
-  .rule .words span.hot { color: #fbbf24; border-color: rgba(251,191,36,0.35); background: rgba(251,191,36,0.07); }
-  code.ruleline { display: block; font-family: var(--font-mono); font-size: 12.5px; color: #a5f3fc; background: rgba(56,189,248,0.06); border: 1px solid rgba(56,189,248,0.15); border-radius: 6px; padding: 4px 10px; margin: 3px 0; }
+  .rule .words span { font-size: 11.5px; padding: 2px 8px; border-radius: 6px; background: rgba(31,31,33,0.04); border: 1px solid var(--border); color: var(--text-muted); }
+  .rule .words span.hot { color: #A8843F; border-color: rgba(168,132,63,0.4); background: rgba(219,192,148,0.2); }
+  code.ruleline { display: block; font-family: var(--font-mono); font-size: 12.5px; color: #7FA5B8; background: rgba(127,165,184,0.06); border: 1px solid rgba(127,165,184,0.15); border-radius: 6px; padding: 4px 10px; margin: 3px 0; }
   /* 识别规则：标题侧规则卡 */
   /* magpie hero 内容限宽居中（背景全屏延伸） */
   .proj-hero { max-width: 1400px; margin: 0 auto; }
@@ -32,8 +32,8 @@
   }
   .magpie-page-mask {
     background:
-      radial-gradient(ellipse 75% 65% at 50% 42%, rgba(7, 11, 20, 0.5), rgba(7, 11, 20, 0.86)),
-      linear-gradient(rgba(7, 11, 20, 0.45), rgba(7, 11, 20, 0.8));
+      radial-gradient(ellipse 75% 65% at 50% 42%, rgba(246, 244, 239, 0.3), rgba(246, 244, 239, 0.65)),
+      linear-gradient(rgba(246, 244, 239, 0.25), rgba(246, 244, 239, 0.55));
   }
   body.magpie-bg .nav,
   body.magpie-bg .proj-hero,
@@ -93,9 +93,6 @@
         <div class="magpie-slide"><img src="../../assets/images/magpie/c6.jpg" alt=""></div>
         <div class="magpie-slide"><img src="../../assets/images/magpie/c7.jpg" alt=""></div>
       </div>
-      <button class="carousel-btn carousel-prev" type="button" id="mpPrev" aria-label="上一张">‹</button>
-      <button class="carousel-btn carousel-next" type="button" id="mpNext" aria-label="下一张">›</button>
-      <div class="carousel-dots" id="magpieDots"></div>
     </div>
   </div>
 </header>
@@ -151,13 +148,7 @@
   var dotsBox = document.getElementById("magpieDots");
   var stageBg = document.getElementById("magpiePageBg");
   var idx = 0, timer = null;
-  for (var i = 0; i < slides; i++) {
-    var d = document.createElement("button");
-    d.type = "button";
-    d.setAttribute("aria-label", "第 " + (i + 1) + " 张");
-    d.addEventListener("click", (function (n) { return function () { go(n); }; })(i));
-    dotsBox.appendChild(d);
-  }
+
   function setBg(n) {
     if (!stageBg) return;
     var img = track.children[n].querySelector("img");
@@ -167,13 +158,10 @@
     idx = (n + slides) % slides;
     track.style.transform = "translateX(-" + idx * 100 + "%)";
     setBg(idx);
-    for (var i = 0; i < slides; i++) dotsBox.children[i].classList.toggle("on", i === idx);
   }
   function auto() { timer = setInterval(function () { go(idx + 1); }, 4000); }
   function stop() { if (timer) { clearInterval(timer); timer = null; } }
   var slider = document.getElementById("magpieSlider");
-  document.getElementById("mpPrev").addEventListener("click", function () { stop(); go(idx - 1); auto(); });
-  document.getElementById("mpNext").addEventListener("click", function () { stop(); go(idx + 1); auto(); });
   slider.addEventListener("mouseenter", stop);
   slider.addEventListener("mouseleave", auto);
   go(0);

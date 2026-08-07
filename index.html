@@ -42,7 +42,6 @@
     <p class="hero-bg-sub">用户画像 · 广告效果 · 弹幕行为 · 内容识别 · 产品开发</p>
   </div>
 
-  <div class="hero-bg-dots" id="heroDots"></div>
   <div class="hero-bg-hint" id="heroHint">项目作品</div>
 </header>
 
@@ -111,24 +110,14 @@
 /* 全屏背景轮播 */
 (function () {
   var slides = document.querySelectorAll(".bg-slide");
-  var dotsBox = document.getElementById("heroDots");
   var hint = document.getElementById("heroHint");
   var names = ["汽车画像", "咖啡广告对比", "B站弹幕研究", "文旅传播研究", "游戏互动产品", "流量新闻识别"];
   var idx = 0, timer = null;
-
-  for (var i = 0; i < slides.length; i++) {
-    var d = document.createElement("button");
-    d.type = "button";
-    d.setAttribute("aria-label", "第 " + (i + 1) + " 个项目");
-    d.addEventListener("click", (function (n) { return function () { go(n); }; })(i));
-    dotsBox.appendChild(d);
-  }
 
   function go(n) {
     idx = (n + slides.length) % slides.length;
     for (var i = 0; i < slides.length; i++) {
       slides[i].classList.toggle("on", i === idx);
-      dotsBox.children[i].classList.toggle("on", i === idx);
     }
     if (hint) hint.textContent = names[idx];
   }

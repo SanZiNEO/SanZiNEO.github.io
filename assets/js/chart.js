@@ -7,7 +7,7 @@
 (function (global) {
   "use strict";
 
-  var PALETTE = ["#38bdf8", "#a78bfa", "#f472b6", "#34d399", "#fbbf24", "#f87171", "#22d3ee"];
+  var PALETTE = ["#7FA5B8", "#BEA0C8", "#D19B9B", "#8EB5AD", "#DBC094", "#CF9292", "#8FB4C4"];
   var NS = "http://www.w3.org/2000/svg";
 
   /* ---------- 工具 ---------- */
@@ -116,7 +116,7 @@
     series.forEach(function (s) {
       var item = E("g", { transform: "translate(" + x + ",0)" });
       item.appendChild(E("rect", { x: 0, y: -8, width: 13, height: 13, rx: 3, fill: s.color }));
-      item.appendChild(E("text", { x: 18, y: 3, "font-size": 11.5, fill: "#93a0b8" }, [s.name]));
+      item.appendChild(E("text", { x: 18, y: 3, "font-size": 11.5, fill: "#4B4B4E" }, [s.name]));
       x += 28 + s.name.length * 12 + 16;
       lg.appendChild(item);
     });
@@ -167,8 +167,8 @@
         for (var gi = 0; gi <= 4; gi++) {
           var gy = PT + ih - (ih * gi / 4);
           var gv = maxV * gi / 4;
-          barsLayer.appendChild(E("line", { x1: PL, y1: gy, x2: W - PR, y2: gy, stroke: "rgba(255,255,255,0.07)", "stroke-width": 1 }));
-          barsLayer.appendChild(E("text", { x: PL - 8, y: gy + 4, "text-anchor": "end", "font-size": 11, fill: "#5d6b85" }, [fmt(gv, 1)]));
+          barsLayer.appendChild(E("line", { x1: PL, y1: gy, x2: W - PR, y2: gy, stroke: "rgba(31,31,33,0.05)", "stroke-width": 1 }));
+          barsLayer.appendChild(E("text", { x: PL - 8, y: gy + 4, "text-anchor": "end", "font-size": 11, fill: "#8C8C8E" }, [fmt(gv, 1)]));
         }
       }
 
@@ -182,17 +182,17 @@
         var by = PT + ih - (bl / maxV) * ih;
         barsLayer.appendChild(E("line", {
           x1: PL, y1: by, x2: W - PR, y2: by,
-          stroke: "#fbbf24", "stroke-width": 1.6, "stroke-dasharray": "7 5", opacity: 0.85
+          stroke: "#DBC094", "stroke-width": 1.6, "stroke-dasharray": "7 5", opacity: 0.85
         }));
         barsLayer.appendChild(E("text", {
           x: W - PR, y: by - 6, "text-anchor": "end", "font-size": 11.5,
-          fill: "#fbbf24", "font-family": "var(--font-mono)"
+          fill: "#DBC094", "font-family": "var(--font-mono)"
         }, [opts.baseline.label]));
       }
 
       labels.forEach(function (lb, i) {
         var cx = PL + groupW * i + groupW / 2;
-        barsLayer.appendChild(E("text", { x: cx, y: H - PB + 16, "text-anchor": "middle", "font-size": 12, fill: "#93a0b8" }, [String(lb)]));
+        barsLayer.appendChild(E("text", { x: cx, y: H - PB + 16, "text-anchor": "middle", "font-size": 12, fill: "#4B4B4E" }, [String(lb)]));
 
         if (stacked) {
           var acc = 0;
@@ -236,7 +236,7 @@
           series.forEach(function (s, si) {
             var item = E("g", { transform: "translate(" + lx0 + "," + (ly0 + si * 22) + ")" });
             item.appendChild(E("rect", { x: 0, y: -8, width: 13, height: 13, rx: 3, fill: s.color }));
-            item.appendChild(E("text", { x: 18, y: 3, "font-size": 12, fill: "#93a0b8" }, [s.name]));
+            item.appendChild(E("text", { x: 18, y: 3, "font-size": 12, fill: "#4B4B4E" }, [s.name]));
             legendLayer.appendChild(item);
           });
         } else {
@@ -244,7 +244,7 @@
           series.forEach(function (s) {
             var item = E("g", { transform: "translate(" + lx + "," + (H - 20) + ")" });
             item.appendChild(E("rect", { x: 0, y: -8, width: 14, height: 14, rx: 3, fill: s.color }));
-            item.appendChild(E("text", { x: 20, y: 3, "font-size": 12, fill: "#93a0b8" }, [s.name]));
+            item.appendChild(E("text", { x: 20, y: 3, "font-size": 12, fill: "#4B4B4E" }, [s.name]));
             lx += 34 + s.name.length * 13 + 24;
             legendLayer.appendChild(item);
           });
@@ -287,9 +287,9 @@
       var v = values[i];
       var bw = v / maxV * iw;
       var color = (opts.colors && opts.colors[i]) || PALETTE[i % PALETTE.length];
-      svg.appendChild(E("text", { x: PL - 12, y: y + 4, "text-anchor": "end", "font-size": 12.5, fill: "#93a0b8" }, [String(lb)]));
+      svg.appendChild(E("text", { x: PL - 12, y: y + 4, "text-anchor": "end", "font-size": 12.5, fill: "#4B4B4E" }, [String(lb)]));
       if (!opts.clean) {
-        svg.appendChild(E("line", { x1: PL, y1: y, x2: W - PR, y2: y, stroke: "rgba(255,255,255,0.05)" }));
+        svg.appendChild(E("line", { x1: PL, y1: y, x2: W - PR, y2: y, stroke: "rgba(31,31,33,0.04)" }));
       }
       var rect = E("rect", {
         x: PL, y: y - rowH / 2, width: bw, height: rowH, rx: rowH / 2,
@@ -299,7 +299,7 @@
       rect.appendChild(E("animate", { attributeName: "width", from: 0, to: bw, dur: "0.7s", begin: (0.1 + i * 0.07) + "s", fill: "freeze" }));
       svg.appendChild(rect);
       svg.appendChild(E("text", {
-        x: PL + bw + 8, y: y + 4, "font-size": 12, fill: "#e8edf7", "font-family": "var(--font-mono)"
+        x: PL + bw + 8, y: y + 4, "font-size": 12, fill: "#1F1F21", "font-family": "var(--font-mono)"
       }, [(opts.format || fmt)(v) + (opts.unit || "")]));
     });
 
@@ -330,8 +330,8 @@
     if (!opts.clean) {
       for (var gi = 0; gi <= 4; gi++) {
         var gy = PT + ih - (ih * gi / 4);
-        svg.appendChild(E("line", { x1: PL, y1: gy, x2: W - PR, y2: gy, stroke: "rgba(255,255,255,0.07)" }));
-        svg.appendChild(E("text", { x: PL - 8, y: gy + 4, "text-anchor": "end", "font-size": 11, fill: "#5d6b85" }, [fmt(maxV * gi / 4, 1)]));
+        svg.appendChild(E("line", { x1: PL, y1: gy, x2: W - PR, y2: gy, stroke: "rgba(31,31,33,0.05)" }));
+        svg.appendChild(E("text", { x: PL - 8, y: gy + 4, "text-anchor": "end", "font-size": 11, fill: "#8C8C8E" }, [fmt(maxV * gi / 4, 1)]));
       }
     }
 
@@ -343,7 +343,7 @@
     labels.forEach(function (lb, i) {
       var lx = X(i);
       if (i === 0 || i === n - 1 || n <= 8) {
-        svg.appendChild(E("text", { x: lx, y: H - PB + 16, "text-anchor": "middle", "font-size": 11.5, fill: "#93a0b8" }, [String(lb)]));
+        svg.appendChild(E("text", { x: lx, y: H - PB + 16, "text-anchor": "middle", "font-size": 11.5, fill: "#4B4B4E" }, [String(lb)]));
       }
     });
 
@@ -412,9 +412,9 @@
     /* 轴线 + 标签 */
     labels.forEach(function (lb, i) {
       var p = P(i, R);
-      svg.appendChild(E("line", { x1: cx, y1: cy, x2: p[0], y2: p[1], stroke: "rgba(255,255,255,0.07)" }));
+      svg.appendChild(E("line", { x1: cx, y1: cy, x2: p[0], y2: p[1], stroke: "rgba(31,31,33,0.05)" }));
       var lp = P(i, R + 24);
-      svg.appendChild(E("text", { x: lp[0], y: lp[1] + 4, "text-anchor": "middle", "font-size": 12, fill: "#93a0b8" }, [String(lb)]));
+      svg.appendChild(E("text", { x: lp[0], y: lp[1] + 4, "text-anchor": "middle", "font-size": 12, fill: "#4B4B4E" }, [String(lb)]));
     });
 
     /* 数据多边形 */
@@ -446,8 +446,8 @@
    ============================================================ */
   function heatmap(el, opts) {
     var rows = opts.rows || [], cols = opts.cols || [], values = opts.values || [];
-    var c1 = (opts.colors && opts.colors[0]) || "#0c1a33";
-    var c2 = (opts.colors && opts.colors[1]) || "#38bdf8";
+    var c1 = (opts.colors && opts.colors[0]) || "#ECEAE3";
+    var c2 = (opts.colors && opts.colors[1]) || "#7FA5B8";
     var cellH = 30, cellW = 62, rowLab = 110, colLab = 30, pad = 8;
     var W = rowLab + cellW * cols.length + pad * 2 + 20;
     var H = colLab + cellH * rows.length + pad * 2 + 20;
@@ -465,14 +465,14 @@
     cols.forEach(function (c, i) {
       svg.appendChild(E("text", {
         x: rowLab + cellW * i + cellW / 2, y: colLab - 8,
-        "text-anchor": "middle", "font-size": 12, fill: "#93a0b8"
+        "text-anchor": "middle", "font-size": 12, fill: "#4B4B4E"
       }, [String(c)]));
     });
 
     rows.forEach(function (r, ri) {
       svg.appendChild(E("text", {
         x: rowLab - 8, y: colLab + cellH * ri + cellH / 2 + 4,
-        "text-anchor": "end", "font-size": 12, fill: "#93a0b8"
+        "text-anchor": "end", "font-size": 12, fill: "#4B4B4E"
       }, [String(r)]));
       cols.forEach(function (c, ci) {
         var v = values[ri][ci] || 0;
@@ -481,8 +481,8 @@
         var rect = E("rect", {
           x: rowLab + cellW * ci + 1, y: colLab + cellH * ri + 1,
           width: cellW - 2, height: cellH - 2, rx: 4,
-          fill: v === 0 ? "rgba(255,255,255,0.03)" : mixColor(c1, c2, t),
-          stroke: "rgba(255,255,255,0.06)",
+          fill: v === 0 ? "rgba(31,31,33,0.03)" : mixColor(c1, c2, t),
+          stroke: "rgba(31,31,33,0.05)",
           "data-tip": "<span class='tip-k'>" + r + " × " + c + "</span>：" + fmt(v) + (opts.unit || "")
         });
         rect.appendChild(E("animate", { attributeName: "opacity", from: 0, to: 1, dur: "0.4s", begin: (0.15 + (ri * cols.length + ci) * 0.02) + "s", fill: "freeze" }));
@@ -490,7 +490,7 @@
         if (v > 0) {
           svg.appendChild(E("text", {
             x: rowLab + cellW * ci + cellW / 2, y: colLab + cellH * ri + cellH / 2 + 4,
-            "text-anchor": "middle", "font-size": 11.5, fill: t > 0.55 ? "#06121f" : "#cfe6f7"
+            "text-anchor": "middle", "font-size": 11.5, fill: t > 0.55 ? "#FFFFFF" : "#4B4B4E"
           }, [fmt(v)]));
         }
       });
@@ -533,8 +533,8 @@
     });
 
     if (opts.centerText) {
-      svg.appendChild(E("text", { x: cx, y: cy - 6, "text-anchor": "middle", "font-size": 24, "font-weight": 800, fill: "#e8edf7", "font-family": "var(--font-mono)" }, [opts.centerText]));
-      svg.appendChild(E("text", { x: cx, y: cy + 16, "text-anchor": "middle", "font-size": 11, fill: "#93a0b8" }, [opts.centerLabel || ""]));
+      svg.appendChild(E("text", { x: cx, y: cy - 6, "text-anchor": "middle", "font-size": 24, "font-weight": 800, fill: "#1F1F21", "font-family": "var(--font-mono)" }, [opts.centerText]));
+      svg.appendChild(E("text", { x: cx, y: cy + 16, "text-anchor": "middle", "font-size": 11, fill: "#4B4B4E" }, [opts.centerLabel || ""]));
     }
 
     /* 图例（右侧，单行：标签 + 数值） */
@@ -542,9 +542,9 @@
     labels.forEach(function (lb, i) {
       var y = ly + i * 24;
       svg.appendChild(E("rect", { x: lx, y: y - 9, width: 12, height: 12, rx: 3, fill: colors[i % colors.length] }));
-      svg.appendChild(E("text", { x: lx + 18, y: y + 1, "font-size": 12.5, fill: "#93a0b8" }, [lb]));
+      svg.appendChild(E("text", { x: lx + 18, y: y + 1, "font-size": 12.5, fill: "#4B4B4E" }, [lb]));
       svg.appendChild(E("text", {
-        x: lx + 18 + lb.length * 13 + 8, y: y + 1, "font-size": 11.5, fill: "#5d6b85", "font-family": "var(--font-mono)"
+        x: lx + 18 + lb.length * 13 + 8, y: y + 1, "font-size": 11.5, fill: "#8C8C8E", "font-family": "var(--font-mono)"
       }, [fmt(values[i])]));
     });
 
@@ -613,23 +613,23 @@
         return p[0].toFixed(1) + "," + p[1].toFixed(1);
       }).join(" ");
       svg.appendChild(E("polygon", {
-        points: pts, fill: "none", stroke: "rgba(255,255,255,0.09)", "stroke-width": 1
+        points: pts, fill: "none", stroke: "rgba(31,31,33,0.06)", "stroke-width": 1
       }));
     });
 
     /* 基准环（市场平均²，虚线，无标注） */
     var basePts = labels.map(function (_, i) { return P(i, sq(baseVals[i])).join(","); }).join(" ");
     svg.appendChild(E("polygon", {
-      points: basePts, fill: "none", stroke: "rgba(255,255,255,0.4)",
+      points: basePts, fill: "none", stroke: "rgba(31,31,33,0.3)",
       "stroke-width": 1.6, "stroke-dasharray": "6 4"
     }));
 
     /* 轴线 + 领域标签 */
     labels.forEach(function (lb, i) {
-      svg.appendChild(E("line", { x1: cx, y1: cy, x2: P(i, 0)[0], y2: P(i, 0)[1], stroke: "rgba(255,255,255,0.05)" }));
+      svg.appendChild(E("line", { x1: cx, y1: cy, x2: P(i, 0)[0], y2: P(i, 0)[1], stroke: "rgba(31,31,33,0.04)" }));
       var lp = P(i, 10000);
       var tx = lp[0] >= cx ? lp[0] + 6 : lp[0] - 6;
-      svg.appendChild(E("text", { x: tx, y: lp[1] + 4, "text-anchor": lp[0] >= cx ? "start" : "end", "font-size": 13, fill: "#e8edf7", "font-weight": 600 }, [String(lb)]));
+      svg.appendChild(E("text", { x: tx, y: lp[1] + 4, "text-anchor": lp[0] >= cx ? "start" : "end", "font-size": 13, fill: "#1F1F21", "font-weight": 600 }, [String(lb)]));
     });
 
     var dynLayer = E("g", {});
@@ -649,7 +649,7 @@
       br.values.forEach(function (v, i) {
         var p = P(i, sq(v));
         var c = E("circle", {
-          cx: p[0], cy: p[1], r: 3.4, fill: color, stroke: "rgba(7,11,20,0.95)", "stroke-width": 1.2,
+          cx: p[0], cy: p[1], r: 3.4, fill: color, stroke: "rgba(246,244,239,0.95)", "stroke-width": 1.2,
           "data-tip": "<span class='tip-k'>" + name + "</span> · " + labels[i] + "<br>渗透 " + (v * 100).toFixed(1) + "% vs 平均 " + (baseVals[i] * 100).toFixed(1) + "%（平方分 " + Math.round(sq(v)) + " / " + Math.round(sq(baseVals[i])) + "）"
         });
         c.appendChild(E("animate", { attributeName: "opacity", from: 0, to: 1, dur: "0.3s", begin: "0.35s", fill: "freeze" }));
@@ -679,7 +679,7 @@
         var w = 30 + label.length * 13;
         if (x + w > W - 10) { x = 10; y -= 20; }
         legendLayer.appendChild(E("rect", { x: x, y: y - 9, width: 13, height: 13, rx: 3, fill: color }));
-        legendLayer.appendChild(E("text", { x: x + 18, y: y + 1, "font-size": 13, fill: "#e2eaf8", "font-weight": 600 }, [label]));
+        legendLayer.appendChild(E("text", { x: x + 18, y: y + 1, "font-size": 13, fill: "#1F1F21", "font-weight": 600 }, [label]));
         x += w;
       });
     }

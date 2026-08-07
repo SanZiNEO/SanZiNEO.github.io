@@ -23,7 +23,7 @@
   }
   .live-cards { display: flex; flex-direction: column; gap: 14px; justify-content: space-between; }
   .live-card { flex: 1; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 20px; transition: all 0.3s; }
-  .live-card:hover { border-color: rgba(56, 189, 248, 0.4); transform: translateY(-3px); }
+  .live-card:hover { border-color: rgba(127, 165, 184, 0.4); transform: translateY(-3px); }
   .live-card h4 { font-size: 15px; margin-bottom: 8px; }
   .live-card p { font-size: 13px; color: var(--text-muted); line-height: 1.65; }
   .live-compare {
@@ -33,12 +33,12 @@
     gap: 14px;
     flex-wrap: wrap;
     text-align: center;
-    background: linear-gradient(90deg, rgba(56,189,248,0.08), rgba(167,139,250,0.08));
+    background: linear-gradient(90deg, rgba(127,165,184,0.08), rgba(190,160,200,0.08));
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
     padding: 14px 20px;
   }
-  .live-compare b { font-size: 14px; color: #a5f3fc; }
+  .live-compare b { font-size: 14px; color: #7FA5B8; }
   .live-compare span { font-size: 13px; color: var(--text-muted); }
   /* 图表对（合并卡内左右布局） */
   .chart-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: center; }
@@ -67,8 +67,8 @@
   }
   .gaming-video-mask {
     background:
-      radial-gradient(ellipse 70% 60% at 50% 40%, rgba(7, 11, 20, 0.45), rgba(7, 11, 20, 0.85)),
-      linear-gradient(rgba(7, 11, 20, 0.5), rgba(7, 11, 20, 0.8));
+      radial-gradient(ellipse 70% 60% at 50% 40%, rgba(246, 244, 239, 0.28), rgba(246, 244, 239, 0.6)),
+      linear-gradient(rgba(246, 244, 239, 0.3), rgba(246, 244, 239, 0.55));
   }
   body.gaming-video .nav,
   body.gaming-video .proj-hero,
@@ -188,7 +188,7 @@
 Chart.hbar(document.getElementById("dlChart"), {
   labels: ["CurseForge", "Modrinth"],
   values: [349, 226],
-  colors: ["#38bdf8", "#a78bfa"],
+  colors: ["#7FA5B8", "#BEA0C8"],
   clean: true,
   height: 220
 });

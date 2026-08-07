@@ -74,7 +74,7 @@
 <script>
 var AD = window.AUTO_DATA;
 var ST = window.AUTO_STATS;
-var palette = ["#38bdf8", "#a78bfa", "#f472b6", "#34d399", "#fbbf24", "#f87171", "#22d3ee"];
+var palette = ["#7FA5B8", "#BEA0C8", "#D19B9B", "#8EB5AD", "#DBC094", "#CF9292", "#8FB4C4"];
 var statOf = {};
 ST.forEach(function (s) { statOf[s.name] = s; });
 var colorOf = {};
@@ -108,13 +108,13 @@ var radar = Chart.radarCompare(document.getElementById("bigRadar"), {
 /* ---- 其他维度图（动态品牌 + 市场平均参照） ---- */
 var gender = Chart.bar(document.getElementById("bigGender"), {
   labels: activeNames(),
-  series: [{ name: "男性占比 %", values: activeNames().map(function (n) { return statOf[n].malePct; }), color: "#38bdf8" }],
+  series: [{ name: "男性占比 %", values: activeNames().map(function (n) { return statOf[n].malePct; }), color: "#7FA5B8" }],
   baseline: { value: AVG.malePct, label: "市场平均 " + AVG.malePct + "%" },
   clean: true, height: 420
 });
 var core = Chart.bar(document.getElementById("bigCore"), {
   labels: activeNames(),
-  series: [{ name: "核心用户占比 %", values: activeNames().map(function (n) { return statOf[n].corePct; }), color: "#a78bfa" }],
+  series: [{ name: "核心用户占比 %", values: activeNames().map(function (n) { return statOf[n].corePct; }), color: "#BEA0C8" }],
   baseline: { value: AVG.corePct, label: "市场平均 " + AVG.corePct + "%" },
   clean: true, height: 420
 });
@@ -122,8 +122,8 @@ var core = Chart.bar(document.getElementById("bigCore"), {
 function refreshCurrent() {
   var names = activeNames();
   if (current === "radar") radar.update(names);
-  else if (current === "gender") gender.update(names, [{ name: "男性占比 %", values: names.map(function (n) { return statOf[n].malePct; }), color: "#38bdf8" }]);
-  else if (current === "core") core.update(names, [{ name: "核心用户占比 %", values: names.map(function (n) { return statOf[n].corePct; }), color: "#a78bfa" }]);
+  else if (current === "gender") gender.update(names, [{ name: "男性占比 %", values: names.map(function (n) { return statOf[n].malePct; }), color: "#7FA5B8" }]);
+  else if (current === "core") core.update(names, [{ name: "核心用户占比 %", values: names.map(function (n) { return statOf[n].corePct; }), color: "#BEA0C8" }]);
 }
 
 /* 20 品牌核心用户占比排行（降序，前三高亮） */
@@ -133,7 +133,7 @@ function refreshCurrent() {
     labels: sorted.map(function (s) { return s.name; }),
     values: sorted.map(function (s) { return s.corePct; }),
     unit: "%",
-    colors: sorted.map(function (s, i) { return i < 3 ? "#38bdf8" : "#5d6b85"; }),
+    colors: sorted.map(function (s, i) { return i < 3 ? "#7FA5B8" : "#8C8C8E"; }),
     clean: true,
     height: 560
   });

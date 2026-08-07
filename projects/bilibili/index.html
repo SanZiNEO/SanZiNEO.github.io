@@ -9,7 +9,7 @@
 <style>
   .stage-flow { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-top: 18px; }
   .stage { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; transition: all 0.3s; }
-  .stage:hover { transform: translateY(-3px); border-color: rgba(56,189,248,0.4); }
+  .stage:hover { transform: translateY(-3px); border-color: rgba(127,165,184,0.4); }
   .stage .s-pct { font-family: var(--font-mono); font-size: 26px; font-weight: 800; }
   .stage .s-name { font-size: 14.5px; font-weight: 700; margin: 2px 0 6px; }
   .stage p { font-size: 12.5px; color: var(--text-muted); line-height: 1.65; }
@@ -31,7 +31,7 @@
     animation-timing-function: linear;
     animation-fill-mode: forwards;
     will-change: transform;
-    text-shadow: 0 0 6px rgba(0, 0, 0, 0.9), 0 1px 4px rgba(0, 0, 0, 0.8);
+    text-shadow: 0 0 6px rgba(246, 244, 239, 0.9), 0 1px 4px rgba(246, 244, 239, 0.9);
   }
   @keyframes bili-danmaku {
     from { transform: translateX(calc(100vw + 100%)); }
@@ -39,8 +39,8 @@
   }
   .danmaku-mask {
     background:
-      radial-gradient(ellipse 75% 65% at 50% 42%, rgba(7, 11, 20, 0.42), rgba(7, 11, 20, 0.74)),
-      linear-gradient(rgba(7, 11, 20, 0.3), rgba(7, 11, 20, 0.64));
+      radial-gradient(ellipse 75% 65% at 50% 42%, rgba(246, 244, 239, 0.25), rgba(246, 244, 239, 0.5)),
+      linear-gradient(rgba(246, 244, 239, 0.15), rgba(246, 244, 239, 0.4));
   }
   body.bili-danmaku .nav,
   body.bili-danmaku .proj-hero,
@@ -83,9 +83,9 @@
       <div>
         <div class="chart-title" style="font-size:16px">弹幕密度三段分布</div>
         <div class="stage-flow" style="grid-template-columns:1fr">
-          <div class="stage"><div class="s-pct" style="color:#38bdf8">47.0%</div><div class="s-name">开头段 · 广告识别</div><p>「甲方」「猝不及防」集中出现，识别率 4.7%</p></div>
-          <div class="stage"><div class="s-pct" style="color:#a78bfa">31.6%</div><div class="s-name">中段 · 品牌讨论</div><p>品牌正面讨论占比升至 4.5%</p></div>
-          <div class="stage"><div class="s-pct" style="color:#34d399">21.4%</div><div class="s-name">结尾段 · 种草时刻</div><p>品牌正面率最高 6.0%，「买了」「种草」集中出现</p></div>
+          <div class="stage"><div class="s-pct" style="color:#7FA5B8">47.0%</div><div class="s-name">开头段 · 广告识别</div><p>「甲方」「猝不及防」集中出现，识别率 4.7%</p></div>
+          <div class="stage"><div class="s-pct" style="color:#BEA0C8">31.6%</div><div class="s-name">中段 · 品牌讨论</div><p>品牌正面讨论占比升至 4.5%</p></div>
+          <div class="stage"><div class="s-pct" style="color:#8EB5AD">21.4%</div><div class="s-name">结尾段 · 种草时刻</div><p>品牌正面率最高 6.0%，「买了」「种草」集中出现</p></div>
         </div>
       </div>
     </div>
@@ -156,7 +156,7 @@
   }
   pool = shuffle(pool);
   var pos = 0;
-  var COLORS = ["#e8edf7", "#e8edf7", "#e8edf7", "#fb7299", "#7dd3fc", "#fbbf24"];
+  var COLORS = ["#1F1F21", "#1F1F21", "#1F1F21", "#C08484", "#7DA3B3", "#C49B62"];
   function spawn() {
     if (!box.isConnected || box.children.length > 90) return;
     var d = pool[pos];
@@ -186,20 +186,20 @@ Chart.donut(document.getElementById("stageDonut"), {
 Chart.hbar(document.getElementById("anomalyBar"), {
   labels: ["闲鱼","1688","美团","淘宝","云鲸","友望","转转","京东","得物","妙界","夸克","扫描全能王"],
   values: [1.14, 0.96, 0.855, 0.715, 0.715, 0.685, 0.645, 0.640, 0.555, 0.550, 0.465, 0.430],
-  colors: ["#f87171","#fbbf24","#fbbf24","#38bdf8","#38bdf8","#38bdf8","#38bdf8","#38bdf8","#38bdf8","#38bdf8","#34d399","#34d399"],
+  colors: ["#CF9292","#C49B62","#C49B62","#7FA5B8","#7FA5B8","#7FA5B8","#7FA5B8","#7FA5B8","#7FA5B8","#7FA5B8","#8EB5AD","#8EB5AD"],
   clean: true,
   height: 320
 });
 Chart.bar(document.getElementById("recogBar"), {
   labels: ["开头段", "中段", "结尾段"],
-  series: [{ name: "品牌正面率 %", values: [2.7, 4.5, 6.0], color: "#34d399" }],
+  series: [{ name: "品牌正面率 %", values: [2.7, 4.5, 6.0], color: "#8EB5AD" }],
   clean: true,
   height: 230
 });
 /* 弹幕密度对比（中位数 dm/s）——广告段沉默是主流 */
 Chart.bar(document.getElementById("densityCompare"), {
   labels: ["非广告段", "广告段"],
-  series: [{ name: "弹幕密度（条/秒）", values: [13.21, 6.03], color: "#38bdf8" }],
+  series: [{ name: "弹幕密度（条/秒）", values: [13.21, 6.03], color: "#7FA5B8" }],
   clean: true,
   height: 260
 });
@@ -207,7 +207,7 @@ Chart.bar(document.getElementById("densityCompare"), {
 Chart.hbar(document.getElementById("blackTalk"), {
   labels: ["甲方", "猝不及防", "金主", "广告", "零帧", "快跑", "空降", "广子"],
   values: [659, 593, 468, 440, 273, 249, 176, 149],
-  colors: ["#38bdf8", "#38bdf8", "#38bdf8", "#5d6b85", "#38bdf8", "#38bdf8", "#38bdf8", "#38bdf8"],
+  colors: ["#7FA5B8", "#7FA5B8", "#7FA5B8", "#8C8C8E", "#7FA5B8", "#7FA5B8", "#7FA5B8", "#7FA5B8"],
   clean: true,
   height: 300
 });

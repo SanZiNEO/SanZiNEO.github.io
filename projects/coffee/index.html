@@ -7,10 +7,6 @@
 <meta name="description" content="瑞幸联名、星巴克功能营销、古茗明星代言三场 campaign 实证对比。">
 <link rel="stylesheet" href="../../assets/css/style.css">
 <style>
-  .clouds { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
-  .cloud { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 14px; }
-  .cloud h4 { font-size: 14px; margin-bottom: 10px; text-align: center; color: var(--text); }
-
   /* 词云弹幕背景（全局 fixed，滚动一直存在） */
   body.page-danmaku .danmaku-bg,
   body.page-danmaku .coffee-hero-mask {
@@ -24,16 +20,27 @@
     top: 0;
     white-space: nowrap;
     font-weight: 600;
-    opacity: 0.45;
-    animation-name: danmaku;
-    animation-timing-function: linear;
+    opacity: 0;
+    animation-name: bubble-a;
+    animation-timing-function: ease-out;
     animation-fill-mode: forwards;
-    will-change: transform;
+    will-change: transform, opacity;
     text-shadow: 0 0 14px rgba(56, 189, 248, 0.18);
   }
-  @keyframes danmaku {
-    from { transform: translateX(calc(100vw + 100%)); }
-    to { transform: translateX(-120%); }
+  @keyframes bubble-a {
+    0%   { opacity: 0; transform: scale(var(--s0, 0.6)); }
+    15%  { opacity: 0.85; }
+    100% { opacity: 0; transform: scale(var(--s1, 2.4)); }
+  }
+  @keyframes bubble-b {
+    0%   { opacity: 0; transform: scale(var(--s0, 0.6)); }
+    30%  { opacity: 0.85; }
+    100% { opacity: 0; transform: scale(var(--s1, 2.4)); }
+  }
+  @keyframes bubble-c {
+    0%   { opacity: 0; transform: scale(var(--s0, 0.6)); }
+    45%  { opacity: 0.85; }
+    100% { opacity: 0; transform: scale(var(--s1, 2.4)); }
   }
   .coffee-hero-mask {
     background:
@@ -76,9 +83,8 @@
     </div>
   </div>
   <div class="proj-hero-visual reveal" style="--d:.12s;grid-column:2;position:relative;z-index:2">
-    <div class="chart-title" style="font-size:17px">三场 campaign 日互动节奏（按活动第 N 天对齐）</div>
-    <div class="chart-sub" style="margin-bottom:6px">瑞幸：官宣 11719 + 放量双峰｜古茗：猜口令免单日 7192 单峰｜星巴克：功能问答多峰平缓</div>
-    <div class="chart-body" id="timeline"></div>
+    <div class="chart-title" style="font-size:17px">三场 campaign 互动节奏</div>
+    <div class="chart-body" id="timeline" style="margin-top:8px"></div>
   </div>
 </header>
 
@@ -87,27 +93,13 @@
   <section class="section" style="padding-top:24px">
     <div class="wide-charts">
       <div class="chart-card reveal">
-        <div class="chart-title">三品牌 campaign 综合对比</div>
-        <div class="chart-sub">行内相对亮度：亮 = 该指标下领先品牌。互动、人群、粘性一次看全</div>
-        <div class="chart-body" id="overview"></div>
+        <div class="chart-title">三场 campaign 互动构成</div>
+        <div class="chart-body" id="engageBreak"></div>
       </div>
       <div class="chart-card reveal">
-        <div class="chart-title">跨品牌关注矩阵（%）</div>
-        <div class="chart-sub">行 = 评论用户所属品牌，列 = 关注了某品牌官方账号的比例；星巴克用户关注瑞幸达 14.5%</div>
-        <div class="chart-body" id="overlap"></div>
+        <div class="chart-title">评论用户价值分层</div>
+        <div class="chart-body" id="valueSeg"></div>
       </div>
-    </div>
-  </section>
-
-  <section class="section" style="padding-top:8px">
-    <div class="section-head reveal">
-      <div class="section-kicker">Word Clouds</div>
-      <h2 class="section-title">三场 campaign 的「语言」</h2>
-    </div>
-    <div class="clouds reveal">
-      <div class="cloud"><h4 style="color:#38bdf8">瑞幸 · 联名</h4><div class="chart-body" id="cloudRk"></div></div>
-      <div class="cloud"><h4 style="color:#a78bfa">星巴克 · 功能</h4><div class="chart-body" id="cloudSb"></div></div>
-      <div class="cloud"><h4 style="color:#34d399">古茗 · 代言</h4><div class="chart-body" id="cloudGm"></div></div>
     </div>
   </section>
 
@@ -123,39 +115,178 @@
 <script src="../../assets/js/chart.js"></script>
 <script src="../../assets/js/common.js"></script>
 <script>
-/* ===== 词云弹幕背景（三品牌混滚，从右往左无限滚动） ===== */
+/* ===== 词云冒泡背景（三品牌词，随机位置原地浮现 → 轻微放大 → 淡出） ===== */
 (function () {
   var DANMAKU = [
     /* 瑞幸（蓝系） */
-    { t: "生椰拿铁", w: 15, c: "#38bdf8" }, { t: "生椰", w: 9, c: "#38bdf8" }, { t: "瑞幸", w: 9, c: "#38bdf8" },
-    { t: "庆生", w: 7, c: "#38bdf8" }, { t: "周边", w: 7, c: "#38bdf8" }, { t: "周年", w: 6, c: "#38bdf8" },
-    { t: "LOOPY", w: 5, c: "#22d3ee" }, { t: "椰子", w: 5, c: "#38bdf8" }, { t: "陶喆", w: 5, c: "#38bdf8" },
-    { t: "咖啡", w: 5, c: "#38bdf8" }, { t: "冷榨", w: 4, c: "#38bdf8" }, { t: "椰浆", w: 4, c: "#38bdf8" },
-    { t: "椰香", w: 4, c: "#38bdf8" }, { t: "联名", w: 4, c: "#38bdf8" }, { t: "ZANMANG", w: 3, c: "#22d3ee" },
-    { t: "椰奶", w: 3, c: "#38bdf8" }, { t: "锁鲜", w: 3, c: "#38bdf8" }, { t: "新品", w: 3, c: "#38bdf8" },
-    { t: "快乐", w: 3, c: "#38bdf8" }, { t: "轻椰茉莉拿铁", w: 2, c: "#38bdf8" }, { t: "冰沙", w: 2, c: "#38bdf8" },
-    { t: "保温杯", w: 2, c: "#38bdf8" }, { t: "转发过2000加抽10位", w: 2, c: "#7dd3fc" }, { t: "揪10位送饮品券", w: 2, c: "#7dd3fc" },
+    { t: '生椰拿铁', w: 15, c: '#38bdf8' },
+    { t: '生椰', w: 9, c: '#38bdf8' },
+    { t: '瑞幸', w: 9, c: '#38bdf8' },
+    { t: '庆生', w: 7, c: '#38bdf8' },
+    { t: '周边', w: 7, c: '#38bdf8' },
+    { t: '周年', w: 6, c: '#38bdf8' },
+    { t: 'LOOPY', w: 5, c: '#38bdf8' },
+    { t: '椰子', w: 5, c: '#38bdf8' },
+    { t: '陶喆', w: 5, c: '#38bdf8' },
+    { t: '咖啡', w: 5, c: '#38bdf8' },
+    { t: '冷榨', w: 4, c: '#38bdf8' },
+    { t: '椰浆', w: 4, c: '#38bdf8' },
+    { t: '家族', w: 4, c: '#38bdf8' },
+    { t: '椰香', w: 4, c: '#38bdf8' },
+    { t: '联名', w: 4, c: '#38bdf8' },
+    { t: 'ZANMANG', w: 3, c: '#38bdf8' },
+    { t: '椰奶', w: 3, c: '#38bdf8' },
+    { t: '锁鲜', w: 3, c: '#38bdf8' },
+    { t: '新品', w: 3, c: '#38bdf8' },
+    { t: '快乐', w: 3, c: '#38bdf8' },
+    { t: '绵密', w: 2, c: '#38bdf8' },
+    { t: '经典', w: 2, c: '#38bdf8' },
+    { t: '饮品', w: 2, c: '#38bdf8' },
+    { t: '轻椰茉莉拿铁', w: 2, c: '#38bdf8' },
+    { t: '保温杯', w: 2, c: '#38bdf8' },
+    { t: '小瑞', w: 2, c: '#38bdf8' },
+    { t: '奶油', w: 2, c: '#38bdf8' },
+    { t: '冰沙', w: 2, c: '#38bdf8' },
+    { t: '庆祝', w: 2, c: '#38bdf8' },
+    { t: '登场', w: 2, c: '#38bdf8' },
+    { t: '奶盖', w: 1, c: '#38bdf8' },
+    { t: '爆品', w: 1, c: '#38bdf8' },
+    { t: '三重奏', w: 1, c: '#38bdf8' },
+    { t: 'YYDS', w: 1, c: '#38bdf8' },
+    { t: '回归', w: 1, c: '#38bdf8' },
+    { t: '庆典', w: 1, c: '#38bdf8' },
+    { t: '鲜萃', w: 1, c: '#38bdf8' },
+    { t: '冰吸生椰拿铁', w: 1, c: '#38bdf8' },
+    { t: '壁纸', w: 1, c: '#38bdf8' },
+    { t: '杯套', w: 1, c: '#38bdf8' },
+    { t: '摸鱼', w: 1, c: '#38bdf8' },
+    { t: '含椰量', w: 1, c: '#38bdf8' },
+    { t: '亿杯', w: 1, c: '#38bdf8' },
+    { t: '椰椰', w: 1, c: '#38bdf8' },
+    { t: '双厨', w: 1, c: '#38bdf8' },
+    { t: '狂喜', w: 1, c: '#38bdf8' },
+    { t: '魔性', w: 1, c: '#38bdf8' },
+    { t: '爱椰', w: 1, c: '#38bdf8' },
+    { t: '超萌', w: 1, c: '#38bdf8' },
+    { t: '转发过2000加抽10位', w: 2, c: '#38bdf8' },
+    { t: '揪10位送饮品券*1', w: 2, c: '#38bdf8' },
+    { t: '嚼嚼更有料', w: 1, c: '#38bdf8' },
+    { t: '完全没有距离感', w: 1, c: '#38bdf8' },
+    { t: '会自己搞气氛', w: 1, c: '#38bdf8' },
     /* 星巴克（紫系） */
-    { t: "高蛋白拿铁PRO", w: 23, c: "#a78bfa" }, { t: "蛋白质", w: 23, c: "#a78bfa" }, { t: "乳糖", w: 23, c: "#a78bfa" },
-    { t: "好喝", w: 21, c: "#a78bfa" }, { t: "牛乳", w: 20, c: "#a78bfa" }, { t: "高蛋白", w: 18, c: "#a78bfa" },
-    { t: "蛋白", w: 13, c: "#a78bfa" }, { t: "PRO", w: 12, c: "#c4b5fd" }, { t: "不耐", w: 12, c: "#a78bfa" },
-    { t: "自然", w: 11, c: "#a78bfa" }, { t: "香浓", w: 11, c: "#a78bfa" }, { t: "原生", w: 11, c: "#a78bfa" },
-    { t: "轻松", w: 11, c: "#a78bfa" }, { t: "礼物", w: 9, c: "#a78bfa" }, { t: "享用", w: 9, c: "#a78bfa" },
-    { t: "好奶", w: 9, c: "#a78bfa" }, { t: "周一", w: 9, c: "#a78bfa" }, { t: "星巴克", w: 8, c: "#a78bfa" },
-    { t: "创新", w: 7, c: "#a78bfa" }, { t: "自带杯", w: 6, c: "#a78bfa" }, { t: "硬核", w: 5, c: "#a78bfa" },
-    { t: "6.0高蛋白牛乳", w: 8, c: "#c4b5fd" }, { t: "乳糖不耐也可尽情享用", w: 8, c: "#c4b5fd" },
-    { t: "一杯20g原生乳蛋白", w: 3, c: "#c4b5fd" }, { t: "高蛋白抹茶拿铁", w: 2, c: "#a78bfa" },
-    { t: "只为呈现这一杯", w: 2, c: "#c4b5fd" }, { t: "来杯高蛋白拿铁PRO", w: 2, c: "#c4b5fd" },
-    /* 古茗（绿/黄系） */
-    { t: "咖啡", w: 56, c: "#34d399" }, { t: "口令", w: 36, c: "#fbbf24" }, { t: "古茗", w: 27, c: "#34d399" },
-    { t: "阿祖", w: 25, c: "#f472b6" }, { t: "吴彦祖", w: 17, c: "#f472b6" }, { t: "任性", w: 12, c: "#fbbf24" },
-    { t: "Good", w: 11, c: "#fbbf24" }, { t: "轻椰拿铁", w: 11, c: "#34d399" }, { t: "工作日", w: 9, c: "#34d399" },
-    { t: "题目", w: 9, c: "#fbbf24" }, { t: "免费", w: 9, c: "#fbbf24" }, { t: "一杯", w: 9, c: "#34d399" },
-    { t: "门店", w: 8, c: "#34d399" }, { t: "同款", w: 7, c: "#34d399" }, { t: "现磨", w: 6, c: "#34d399" },
-    { t: "全场", w: 6, c: "#34d399" }, { t: "尝尝", w: 6, c: "#34d399" }, { t: "随行", w: 5, c: "#34d399" },
-    { t: "壁纸", w: 5, c: "#34d399" }, { t: "鲜活", w: 4, c: "#34d399" }, { t: "贴纸", w: 4, c: "#34d399" },
-    { t: "猜口令｜50000杯古茗咖啡", w: 6, c: "#fbbf24" }, { t: "阿祖请你任性喝", w: 2, c: "#f472b6" },
-    { t: "猜口令｜200000杯古茗咖啡", w: 2, c: "#fbbf24" }, { t: "品质合伙人", w: 2, c: "#f472b6" }, { t: "美式", w: 2, c: "#34d399" }
+    { t: '高蛋白拿铁PRO', w: 23, c: '#a78bfa' },
+    { t: '蛋白质', w: 23, c: '#a78bfa' },
+    { t: '乳糖', w: 23, c: '#a78bfa' },
+    { t: '好喝', w: 21, c: '#a78bfa' },
+    { t: '牛乳', w: 20, c: '#a78bfa' },
+    { t: '高蛋白', w: 18, c: '#a78bfa' },
+    { t: '蛋白', w: 13, c: '#a78bfa' },
+    { t: 'PRO', w: 12, c: '#a78bfa' },
+    { t: '不耐', w: 12, c: '#a78bfa' },
+    { t: '自然', w: 11, c: '#a78bfa' },
+    { t: '香浓', w: 11, c: '#a78bfa' },
+    { t: '原生', w: 11, c: '#a78bfa' },
+    { t: '轻松', w: 11, c: '#a78bfa' },
+    { t: '礼物', w: 9, c: '#a78bfa' },
+    { t: '尽情', w: 9, c: '#a78bfa' },
+    { t: '享用', w: 9, c: '#a78bfa' },
+    { t: '好奶', w: 9, c: '#a78bfa' },
+    { t: '周一', w: 9, c: '#a78bfa' },
+    { t: '星巴克', w: 8, c: '#a78bfa' },
+    { t: '创新', w: 7, c: '#a78bfa' },
+    { t: '自带', w: 6, c: '#a78bfa' },
+    { t: '每天', w: 6, c: '#a78bfa' },
+    { t: '咖啡', w: 6, c: '#a78bfa' },
+    { t: '随机', w: 6, c: '#a78bfa' },
+    { t: '硬核', w: 5, c: '#a78bfa' },
+    { t: '每日', w: 5, c: '#a78bfa' },
+    { t: '限时', w: 4, c: '#a78bfa' },
+    { t: '门店', w: 4, c: '#a78bfa' },
+    { t: '同价', w: 4, c: '#a78bfa' },
+    { t: '闪购', w: 4, c: '#a78bfa' },
+    { t: '补充', w: 4, c: '#a78bfa' },
+    { t: '免费', w: 3, c: '#a78bfa' },
+    { t: '搭子', w: 3, c: '#a78bfa' },
+    { t: '精萃', w: 3, c: '#a78bfa' },
+    { t: '成年人', w: 3, c: '#a78bfa' },
+    { t: '干杯', w: 2, c: '#a78bfa' },
+    { t: '会员', w: 2, c: '#a78bfa' },
+    { t: '咕噜咕噜', w: 2, c: '#a78bfa' },
+    { t: '清甜', w: 2, c: '#a78bfa' },
+    { t: '停不下来', w: 2, c: '#a78bfa' },
+    { t: '福利', w: 2, c: '#a78bfa' },
+    { t: '早餐', w: 2, c: '#a78bfa' },
+    { t: '开工', w: 2, c: '#a78bfa' },
+    { t: '惊喜价', w: 2, c: '#a78bfa' },
+    { t: '高蛋白抹茶拿铁', w: 2, c: '#a78bfa' },
+    { t: '活力', w: 2, c: '#a78bfa' },
+    { t: '唤醒', w: 2, c: '#a78bfa' },
+    { t: '元气', w: 1, c: '#a78bfa' },
+    { t: '春日', w: 1, c: '#a78bfa' },
+    { t: '奇亚籽', w: 1, c: '#a78bfa' },
+    { t: '乳糖不耐也可尽情享用拿铁好奶自然甜', w: 8, c: '#a78bfa' },
+    { t: '轻松补足一餐蛋白质0乳糖牛乳', w: 6, c: '#a78bfa' },
+    { t: '一杯20g原生乳蛋白*', w: 3, c: '#a78bfa' },
+    { t: '香浓又好喝硬核创新', w: 3, c: '#a78bfa' },
+    { t: '来杯高蛋白拿铁PRO', w: 2, c: '#a78bfa' },
+    { t: '只为呈现这一杯', w: 2, c: '#a78bfa' },
+    /* 古茗（绿系） */
+    { t: '咖啡', w: 56, c: '#34d399' },
+    { t: '口令', w: 36, c: '#34d399' },
+    { t: '古茗', w: 27, c: '#34d399' },
+    { t: '阿祖', w: 25, c: '#34d399' },
+    { t: '吴彦祖', w: 17, c: '#34d399' },
+    { t: '任性', w: 12, c: '#34d399' },
+    { t: 'Good', w: 11, c: '#34d399' },
+    { t: '轻椰拿铁', w: 11, c: '#34d399' },
+    { t: '工作日', w: 9, c: '#34d399' },
+    { t: '每日', w: 9, c: '#34d399' },
+    { t: '题目', w: 9, c: '#34d399' },
+    { t: '免费', w: 9, c: '#34d399' },
+    { t: '一杯', w: 9, c: '#34d399' },
+    { t: '门店', w: 8, c: '#34d399' },
+    { t: '同款', w: 7, c: '#34d399' },
+    { t: '现磨', w: 6, c: '#34d399' },
+    { t: '全场', w: 6, c: '#34d399' },
+    { t: '尝尝', w: 6, c: '#34d399' },
+    { t: '随行', w: 5, c: '#34d399' },
+    { t: '壁纸', w: 5, c: '#34d399' },
+    { t: '鲜活', w: 4, c: '#34d399' },
+    { t: '贴纸', w: 4, c: '#34d399' },
+    { t: '印签', w: 3, c: '#34d399' },
+    { t: '放送', w: 3, c: '#34d399' },
+    { t: '亲签', w: 2, c: '#34d399' },
+    { t: '咖啡豆', w: 2, c: '#34d399' },
+    { t: '烘焙', w: 2, c: '#34d399' },
+    { t: '美式', w: 2, c: '#34d399' },
+    { t: '品质', w: 2, c: '#34d399' },
+    { t: '合伙人', w: 2, c: '#34d399' },
+    { t: '香椰水', w: 1, c: '#34d399' },
+    { t: '鲜豆', w: 1, c: '#34d399' },
+    { t: '鲜奶', w: 1, c: '#34d399' },
+    { t: '冷链', w: 1, c: '#34d399' },
+    { t: '奶香', w: 1, c: '#34d399' },
+    { t: '顺滑', w: 1, c: '#34d399' },
+    { t: '瑞士', w: 1, c: '#34d399' },
+    { t: '咖啡机', w: 1, c: '#34d399' },
+    { t: '萃取', w: 1, c: '#34d399' },
+    { t: '香醇', w: 1, c: '#34d399' },
+    { t: '古茗香', w: 1, c: '#34d399' },
+    { t: '复制粘贴', w: 1, c: '#34d399' },
+    { t: '宠粉', w: 1, c: '#34d399' },
+    { t: '周边', w: 1, c: '#34d399' },
+    { t: '联名', w: 1, c: '#34d399' },
+    { t: '杯套', w: 1, c: '#34d399' },
+    { t: '纸袋', w: 1, c: '#34d399' },
+    { t: '官宣', w: 1, c: '#34d399' },
+    { t: '共创', w: 1, c: '#34d399' },
+    { t: '狂撒', w: 1, c: '#34d399' },
+    { t: '云顶', w: 1, c: '#34d399' },
+    { t: '轻盈', w: 1, c: '#34d399' },
+    { t: '猜口令｜50000杯古茗咖啡', w: 6, c: '#34d399' },
+    { t: '猜口令｜200000杯古茗咖啡', w: 2, c: '#34d399' },
+    { t: '阿祖请你任性喝', w: 2, c: '#34d399' },
+    { t: '快去你附近的古茗咖啡现磨门店', w: 2, c: '#34d399' }
   ];
   var totalW = 0;
   DANMAKU.forEach(function (d) { totalW += d.w; });
@@ -192,7 +323,7 @@
   if (box) {
     var maxW = DANMAKU.reduce(function (a, d) { return d.w > a ? d.w : a; }, 0);
     function spawnItem(pickFn, forceLong) {
-      if (!box.isConnected || box.children.length > 75) return;
+      if (!box.isConnected || box.children.length > 90) return;
       var d = pickFn();
       var span = document.createElement("span");
       span.textContent = d.t;
@@ -200,10 +331,14 @@
       var size = isLong ? 20 + Math.random() * 16 : 18 + (d.w / maxW) * 30 + Math.random() * 8;
       span.style.fontSize = size.toFixed(1) + "px";
       span.style.color = d.c;
-      span.style.top = (2 + Math.random() * 92).toFixed(1) + "%";
-      span.style.opacity = (0.3 + Math.random() * 0.28).toFixed(2);
-      span.style.animationDuration = (10 + Math.random() * 16).toFixed(1) + "s";
-      /* 从屏幕外右缘生成 → 滑过全屏 → 左侧销毁 */
+      span.style.left = (2 + Math.random() * 92).toFixed(1) + "%";
+      span.style.top = (2 + Math.random() * 88).toFixed(1) + "%";
+      /* 入场起始随机（下限 0.6）；终点随机（增速差异化）；淡出起点三档随机 */
+      span.style.setProperty("--s0", (0.6 + Math.random() * 0.6).toFixed(2));
+      span.style.setProperty("--s1", (2.0 + Math.random() * 1.0).toFixed(2));
+      span.style.animationName = "bubble-" + ["a", "b", "c"][Math.floor(Math.random() * 3)];
+      span.style.animationDuration = (3 + Math.random() * 5).toFixed(1) + "s";
+      /* 原地冒泡：随机位置浮现 → 轻微放大 → 淡出移除 */
       span.addEventListener("animationend", function () { span.remove(); });
       box.appendChild(span);
     }
@@ -211,8 +346,8 @@
     for (var i = 0; i < 20; i++) setTimeout(function () { spawnItem(pickShort, false); }, i * 110);
     for (var j = 0; j < 4; j++) setTimeout(function () { spawnItem(pickLong, true); }, 400 + j * 900);
     /* 双池独立节奏：短词高频、长句低频轮转 */
-    setInterval(function () { spawnItem(pickShort, false); }, 240);
-    setInterval(function () { spawnItem(pickLong, true); }, 2600);
+    setInterval(function () { spawnItem(pickShort, false); }, 180);
+    setInterval(function () { spawnItem(pickLong, true); }, 2200);
   }
 })();
 
@@ -220,70 +355,41 @@
 Chart.line(document.getElementById("timeline"), {
   labels: ["D1","D2","D3","D4","D5","D6","D7","D8","D9","D10","D11","D12","D13","D14"],
   series: [
-    { name: "瑞幸", values: [11719,4376,944,494,8884,943,945,302,1641,126,6253,5222,0,2162], color: "#38bdf8" },
-    { name: "古茗", values: [5658,182,198,254,260,0,0,3486,80,7192,2707,2139,0,0], color: "#34d399" },
-    { name: "星巴克", values: [93,85,74,83,1574,1270,147,1374,0,87,296,50,1011,1018], color: "#a78bfa" }
+    { name: "瑞幸", values: [100,37.3,8.1,4.2,75.8,8.1,8.1,2.6,14,1.1,53.4,44.6,0,18.4], color: "#38bdf8" },
+    { name: "古茗", values: [78.7,2.5,2.8,3.5,3.6,0,0,48.5,1.1,100,37.6,29.7,0,0], color: "#34d399" },
+    { name: "星巴克", values: [5.9,5.4,4.7,5.3,100,80.7,9.3,87.3,0,5.5,18.8,3.2,64.2,64.7], color: "#a78bfa" }
   ],
   area: false,
   clean: true,
   height: 380
 });
-/* 三品牌综合对比（行内相对亮度） */
-Chart.heatmap(document.getElementById("overview"), {
-  rows: ["单帖平均互动", "女性占比 %", "SVIP 占比 %", "品牌粉丝占比 %", "平均粉丝数"],
-  cols: ["瑞幸", "星巴克", "古茗"],
-  values: [
-    [1692, 274, 1007],
-    [69.0, 65.7, 76.9],
-    [34.2, 24.9, 28.0],
-    [21.7, 57.8, 9.6],
-    [3661, 7482, 8574]
+/* 互动构成（转发 / 评论 / 点赞） */
+Chart.bar(document.getElementById("engageBreak"), {
+  labels: ["瑞幸", "星巴克", "古茗"],
+  series: [
+    { name: "转发", values: [14796, 1733, 7903], color: "#38bdf8" },
+    { name: "评论", values: [7575, 3783, 5158], color: "#a78bfa" },
+    { name: "点赞", values: [21640, 2732, 9101], color: "#f472b6" }
   ],
-  rowScale: true,
-  colors: ["#0c1a33", "#38bdf8"]
+  legendPos: "right",
+  max: 22500,
+  clean: true,
+  height: 320
 });
-/* 跨品牌关注矩阵 */
-Chart.heatmap(document.getElementById("overlap"), {
-  rows: ["瑞幸评论用户", "星巴克评论用户", "古茗评论用户"],
-  cols: ["关注瑞幸", "关注星巴克", "关注古茗"],
-  values: [
-    [25.6, 3.5, 5.3],
-    [14.5, 40.7, 9.4],
-    [8.6, 4.1, 28.6]
+/* 用户价值分层（核心 / 活跃 / 普通） */
+Chart.bar(document.getElementById("valueSeg"), {
+  labels: ["瑞幸", "星巴克", "古茗"],
+  series: [
+    { name: "核心用户", values: [124, 153, 19], color: "#38bdf8" },
+    { name: "活跃用户", values: [387, 155, 276], color: "#a78bfa" },
+    { name: "普通用户", values: [3111, 1788, 2080], color: "#5d6b85" }
   ],
-  unit: "%",
-  colors: ["#0c1a33", "#38bdf8"]
+  legendPos: "right",
+  max: 3300,
+  clean: true,
+  height: 320
 });
-/* 词云 */
-Chart.tagcloud(document.getElementById("cloudRk"), {
-  words: [
-    {text:"生椰拿铁",weight:15,color:"#38bdf8"},{text:"生椰",weight:9},{text:"庆生",weight:7},{text:"周边",weight:7,color:"#f472b6"},
-    {text:"周年",weight:6},{text:"LOOPY",weight:5,color:"#22d3ee"},{text:"椰子",weight:5},{text:"陶喆",weight:5,color:"#a78bfa"},
-    {text:"冷榨",weight:4},{text:"椰浆",weight:4},{text:"椰香",weight:4},{text:"联名",weight:4,color:"#f472b6"},
-    {text:"ZANMANG",weight:3},{text:"椰奶",weight:3},{text:"锁鲜",weight:3},{text:"新品",weight:3},{text:"快乐",weight:3},
-    {text:"保温杯",weight:2},{text:"轻椰茉莉拿铁",weight:2},{text:"冰沙",weight:2},{text:"壁纸",weight:1},{text:"杯套",weight:1}
-  ]
-});
-Chart.tagcloud(document.getElementById("cloudSb"), {
-  words: [
-    {text:"高蛋白拿铁PRO",weight:23,color:"#a78bfa"},{text:"蛋白质",weight:23},{text:"乳糖",weight:23,color:"#f472b6"},
-    {text:"好喝",weight:21},{text:"牛乳",weight:20},{text:"高蛋白",weight:18,color:"#a78bfa"},{text:"蛋白",weight:13},
-    {text:"PRO",weight:12},{text:"不耐",weight:12},{text:"自然",weight:11},{text:"香浓",weight:11},{text:"原生",weight:11},
-    {text:"轻松",weight:11},{text:"礼物",weight:9},{text:"尽情",weight:9},{text:"享用",weight:9},{text:"好奶",weight:9},
-    {text:"周一",weight:9},{text:"6.0高蛋白牛乳",weight:8},{text:"创新",weight:7},{text:"自带",weight:6},{text:"咖啡",weight:6},
-    {text:"随机",weight:6},{text:"会员",weight:2}
-  ]
-});
-Chart.tagcloud(document.getElementById("cloudGm"), {
-  words: [
-    {text:"咖啡",weight:56,color:"#34d399"},{text:"口令",weight:36,color:"#fbbf24"},{text:"古茗",weight:27},
-    {text:"阿祖",weight:25,color:"#f472b6"},{text:"吴彦祖",weight:17},{text:"任性",weight:12},{text:"Good",weight:11},
-    {text:"轻椰拿铁",weight:11},{text:"工作日",weight:9},{text:"每日",weight:9},{text:"题目",weight:9},{text:"免费",weight:9,color:"#fbbf24"},
-    {text:"一杯",weight:9},{text:"门店",weight:8},{text:"同款",weight:7},{text:"现磨",weight:6},{text:"全场",weight:6},
-    {text:"尝尝",weight:6},{text:"随行",weight:5},{text:"壁纸",weight:5},{text:"鲜活",weight:4},{text:"贴纸",weight:4},
-    {text:"合伙人",weight:2,color:"#a78bfa"},{text:"美式",weight:2}
-  ]
-});
+/* 词云已移至背景冒泡（DANMAKU 池），页面不再单独渲染 */
 </script>
 </body>
 </html>

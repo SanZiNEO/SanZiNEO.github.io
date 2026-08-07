@@ -109,13 +109,15 @@
 
   function legend(svg, series, W, H) {
     if (series.length < 2) return;
+    var total = 0;
+    series.forEach(function (s) { total += 28 + s.name.length * 12 + 16; });
+    var x = Math.max(8, (W - total) / 2);
     var lg = E("g", { transform: "translate(0," + (H - 20) + ")" });
-    var x = W / 2 - 20;
     series.forEach(function (s) {
       var item = E("g", { transform: "translate(" + x + ",0)" });
-      item.appendChild(E("rect", { x: 0, y: -8, width: 14, height: 14, rx: 3, fill: s.color }));
-      item.appendChild(E("text", { x: 20, y: 3, "font-size": 12, fill: "#93a0b8" }, [s.name]));
-      x += 34 + s.name.length * 13 + 24;
+      item.appendChild(E("rect", { x: 0, y: -8, width: 13, height: 13, rx: 3, fill: s.color }));
+      item.appendChild(E("text", { x: 18, y: 3, "font-size": 11.5, fill: "#93a0b8" }, [s.name]));
+      x += 28 + s.name.length * 12 + 16;
       lg.appendChild(item);
     });
     svg.appendChild(lg);
@@ -130,9 +132,11 @@
     var labels = opts.labels || [];
     var series = opts.series || [];
     var stacked = !!opts.stacked;
+    var legendRight = opts.legendPos === "right";
+    var legendLeft = opts.legendPos === "left";
     var H = opts.height || 300;
     var W = 720;
-    var PL = 44, PR = 14, PT = 14, PB = 46;
+    var PL = legendLeft ? 150 : 44, PR = legendRight ? 140 : 14, PT = 14, PB = 46;
     var iw = W - PL - PR, ih = H - PT - PB;
 
     var b = base({ width: W, height: H });
@@ -154,7 +158,7 @@
           if (acc > maxV) maxV = acc;
         });
       });
-      maxV = niceMax(maxV);
+      maxV = opts.max || niceMax(maxV);
 
       series.forEach(function (s, si) { s.color = s.color || PALETTE[si % PALETTE.length]; });
 
@@ -224,16 +228,27 @@
         }
       });
 
-      /* 图例（动态） */
+      /* 图例（动态：默认底部，支持右侧/左侧竖排） */
       if (series.length >= 2) {
-        var lx = W / 2 - 20;
-        series.forEach(function (s) {
-          var item = E("g", { transform: "translate(" + lx + "," + (H - 20) + ")" });
-          item.appendChild(E("rect", { x: 0, y: -8, width: 14, height: 14, rx: 3, fill: s.color }));
-          item.appendChild(E("text", { x: 20, y: 3, "font-size": 12, fill: "#93a0b8" }, [s.name]));
-          lx += 34 + s.name.length * 13 + 24;
-          legendLayer.appendChild(item);
-        });
+        if (legendRight || legendLeft) {
+          var lx0 = legendRight ? W - 118 : 14;
+          var ly0 = H / 2 - series.length * 11;
+          series.forEach(function (s, si) {
+            var item = E("g", { transform: "translate(" + lx0 + "," + (ly0 + si * 22) + ")" });
+            item.appendChild(E("rect", { x: 0, y: -8, width: 13, height: 13, rx: 3, fill: s.color }));
+            item.appendChild(E("text", { x: 18, y: 3, "font-size": 12, fill: "#93a0b8" }, [s.name]));
+            legendLayer.appendChild(item);
+          });
+        } else {
+          var lx = W / 2 - 20;
+          series.forEach(function (s) {
+            var item = E("g", { transform: "translate(" + lx + "," + (H - 20) + ")" });
+            item.appendChild(E("rect", { x: 0, y: -8, width: 14, height: 14, rx: 3, fill: s.color }));
+            item.appendChild(E("text", { x: 20, y: 3, "font-size": 12, fill: "#93a0b8" }, [s.name]));
+            lx += 34 + s.name.length * 13 + 24;
+            legendLayer.appendChild(item);
+          });
+        }
       }
     }
 
@@ -302,7 +317,7 @@
     var series = opts.series || [];
     var H = opts.height || 300;
     var W = 720;
-    var PL = 44, PR = 14, PT = 16, PB = 40;
+    var PL = 44, PR = 44, PT = 16, PB = 40;
     var iw = W - PL - PR, ih = H - PT - PB;
     var maxV = 0;
     series.forEach(function (s) { s.values.forEach(function (v) { if (v > maxV) maxV = v; }); });
@@ -522,15 +537,15 @@
       svg.appendChild(E("text", { x: cx, y: cy + 16, "text-anchor": "middle", "font-size": 11, fill: "#93a0b8" }, [opts.centerLabel || ""]));
     }
 
-    /* 图例（右侧） */
-    var lx = W - 120, ly = cy - (labels.length * 24) / 2;
+    /* 图例（右侧，单行：标签 + 数值） */
+    var lx = W - 130, ly = cy - (labels.length * 24) / 2;
     labels.forEach(function (lb, i) {
       var y = ly + i * 24;
       svg.appendChild(E("rect", { x: lx, y: y - 9, width: 12, height: 12, rx: 3, fill: colors[i % colors.length] }));
       svg.appendChild(E("text", { x: lx + 18, y: y + 1, "font-size": 12.5, fill: "#93a0b8" }, [lb]));
       svg.appendChild(E("text", {
-        x: lx + 18, y: y + 16, "font-size": 11, fill: "#5d6b85", "font-family": "var(--font-mono)"
-      }, [fmt(values[i]) + " · " + (total > 0 ? (values[i] / total * 100).toFixed(1) : "0") + "%"]));
+        x: lx + 18 + lb.length * 13 + 8, y: y + 1, "font-size": 11.5, fill: "#5d6b85", "font-family": "var(--font-mono)"
+      }, [fmt(values[i])]));
     });
 
     bindTip(el, svg);
@@ -591,6 +606,17 @@
     var b = base({ width: W, height: H });
     var svg = b.svg;
 
+    /* 背景网格环（25% / 50% / 75% / 100% 等级环） */
+    [0.25, 0.5, 0.75, 1].forEach(function (lv) {
+      var pts = labels.map(function (_, i) {
+        var p = P(i, lv * 10000);
+        return p[0].toFixed(1) + "," + p[1].toFixed(1);
+      }).join(" ");
+      svg.appendChild(E("polygon", {
+        points: pts, fill: "none", stroke: "rgba(255,255,255,0.09)", "stroke-width": 1
+      }));
+    });
+
     /* 基准环（市场平均²，虚线，无标注） */
     var basePts = labels.map(function (_, i) { return P(i, sq(baseVals[i])).join(","); }).join(" ");
     svg.appendChild(E("polygon", {
@@ -616,9 +642,9 @@
       var pts = br.values.map(function (v, i) { return P(i, sq(v)).join(","); }).join(" ");
       var g = E("g", { "data-brand": name });
       var poly = E("polygon", {
-        points: pts, fill: color, opacity: 0.14, stroke: color, "stroke-width": 2.6, "stroke-linejoin": "round"
+        points: pts, fill: color, "fill-opacity": 0.14, stroke: color, "stroke-width": 2.6, "stroke-linejoin": "round"
       });
-      poly.appendChild(E("animate", { attributeName: "opacity", from: 0, to: 0.14, dur: "0.6s", begin: "0.1s", fill: "freeze" }));
+      poly.appendChild(E("animate", { attributeName: "fill-opacity", from: 0, to: 0.14, dur: "0.6s", begin: "0.1s", fill: "freeze" }));
       g.appendChild(poly);
       br.values.forEach(function (v, i) {
         var p = P(i, sq(v));

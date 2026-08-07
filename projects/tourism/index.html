@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>短视频视域下鲁豫文旅品牌数字化传播效能研究 · SanZiNEO 作品集</title>
-<meta name="description" content="鲁豫 4 个官方文旅账号抖音传播效能研究：BERT 微调情感三分类 + 双模型加权融合。">
+<meta name="description" content="鲁豫 4 个官方文旅账号抖音传播效能对比：6040 视频样本、17.7 万评论。">
 <link rel="stylesheet" href="../../assets/css/style.css">
 </head>
 <body>
@@ -22,20 +22,17 @@
     <div class="crumbs reveal"><a href="../../index.html">首页</a> / 文旅传播研究</div>
     <h1 class="proj-hero-title reveal" style="--d:.05s">鲁豫文旅品牌数字化<br>传播效能研究</h1>
     <p class="proj-hero-desc reveal" style="--d:.1s">
-      山东、河南两省 4 个官方文旅账号的抖音传播效能对比。
-      2024.11–2025.07 月评论量——省级账号（文旅厅 / 好客山东）同期起量并持续高位，
-      市级账号（洛阳 / 威海）以本地内容服务为主。
+      省级文旅账号的传播力是市级的 5–10 倍。
     </p>
     <div class="proj-hero-nums reveal" style="--d:.15s">
       <div class="proj-hero-num"><b data-count="6040">0</b><span>视频样本</span></div>
       <div class="proj-hero-num"><b data-count="17.7" data-decimals="1" data-suffix="万">0</b><span>评论</span></div>
-      <div class="proj-hero-num"><b data-count="85.75" data-decimals="2" data-suffix="%">0</b><span>BERT 情感模型准确率</span></div>
+      <div class="proj-hero-num"><b data-count="85.75" data-decimals="2" data-suffix="%">0</b><span>情感分析准确率</span></div>
     </div>
   </div>
   <div class="proj-hero-visual reveal" style="--d:.12s;grid-column:2">
     <div class="chart-title" style="font-size:17px">月评论量对比（2024.11 – 2025.07）</div>
-    <div class="chart-sub" style="margin-bottom:6px">春节前后为峰值区间；省级账号月评论量是市级的 5–10 倍</div>
-    <div class="chart-body" id="timeline"></div>
+    <div class="chart-body" id="timeline" style="margin-top:8px"></div>
   </div>
 </header>
 
@@ -44,48 +41,16 @@
   <section class="section" style="padding-top:24px">
     <div class="wide-charts">
       <div class="chart-card reveal">
-        <div class="chart-title">各账号视频数</div>
-        <div class="chart-sub">4 账号体量接近，单账号 1455–1500 条</div>
-        <div class="chart-body" id="videoBar"></div>
-      </div>
-      <div class="chart-card reveal">
         <div class="chart-title">视频平均互动（点赞 / 转发）</div>
-        <div class="chart-sub">省级账号互动与转发率显著更高</div>
         <div class="chart-body" id="interactBar"></div>
       </div>
       <div class="chart-card reveal">
         <div class="chart-title">评论 IP 地域 Top 9（全部账号）</div>
-        <div class="chart-sub">河南 + 山东合计占 47%——本省基本盘</div>
         <div class="chart-body" id="ipBar"></div>
       </div>
       <div class="chart-card reveal">
         <div class="chart-title">各账号本省用户评论占比</div>
-        <div class="chart-sub">33%–49%，跨省辐射以粤苏浙为主</div>
         <div class="chart-body" id="homeBar"></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="section" style="padding-top:8px">
-    <div class="section-head reveal">
-      <div class="section-kicker">Findings</div>
-      <h2 class="section-title">关键发现</h2>
-    </div>
-    <div class="findings reveal">
-      <div class="finding">
-        <div class="f-tag">传播效能分层</div>
-        <h4>省级账号是内容放大器，市级账号服务本地</h4>
-        <p>省厅号平均单条 7000+ 点赞、转发 / 点赞比 0.35+，内容放大效应显著；市级号本省用户占比高（33%–41%），服务本地消费决策。</p>
-      </div>
-      <div class="finding">
-        <div class="f-tag">基本盘与辐射</div>
-        <h4>本省基本盘 + 跨省辐射</h4>
-        <p>评论 IP 地域中河南 + 山东合计占 47%，本省用户是基本盘；跨省辐射以广东、江苏、浙江为主。</p>
-      </div>
-      <div class="finding">
-        <div class="f-tag">峰值节奏</div>
-        <h4>春节前后是全年互动峰值</h4>
-        <p>2024.11–2025.07 月评论量显示春节前后为峰值区间；省级账号月评论量长期是市级的 5–10 倍。</p>
       </div>
     </div>
   </section>
@@ -113,12 +78,6 @@ Chart.line(document.getElementById("timeline"), {
   area: false,
   clean: true,
   height: 380
-});
-Chart.hbar(document.getElementById("videoBar"), {
-  labels: ["河南省文旅厅", "好客山东", "洛阳旅游", "威海文旅"],
-  values: [1500, 1495, 1462, 1455],
-  clean: true,
-  height: 200
 });
 Chart.bar(document.getElementById("interactBar"), {
   labels: ["河南省文旅厅", "好客山东", "洛阳旅游", "威海文旅"],

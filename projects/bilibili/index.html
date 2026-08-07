@@ -69,14 +69,12 @@
     <div class="crumbs reveal"><a href="../../index.html">首页</a> / B站弹幕研究</div>
     <h1 class="proj-hero-title reveal" style="--d:.05s">B站植入式广告的<br>用户反应模式实证研究</h1>
     <p class="proj-hero-desc reveal" style="--d:.1s">
-      12 个品牌 120 条植入广告视频，57.9 万条弹幕 + 189 份问卷交叉验证。
-      广告段弹幕呈稳定的「开头识别 → 中段讨论 → 结尾态度」三阶段时序——
-      解释了「接受广告但未即时购买」背后的认知加工过程。
+      大家都不喜欢植入广告。
     </p>
     <div class="proj-hero-nums reveal" style="--d:.15s">
       <div class="proj-hero-num"><b data-count="57.9" data-decimals="1" data-suffix="万">0</b><span>弹幕样本</span></div>
       <div class="proj-hero-num"><b data-count="120">0</b><span>植入广告视频</span></div>
-      <div class="proj-hero-num"><b data-count="189">0</b><span>问卷验证</span></div>
+      <div class="proj-hero-num"><b data-count="12">0</b><span>品牌对比</span></div>
     </div>
   </div>
   <div class="proj-hero-visual reveal" style="--d:.12s;grid-column:2;position:relative;z-index:2">
@@ -85,9 +83,9 @@
       <div>
         <div class="chart-title" style="font-size:16px">弹幕密度三段分布</div>
         <div class="stage-flow" style="grid-template-columns:1fr">
-          <div class="stage"><div class="s-pct" style="color:#38bdf8">47.3%</div><div class="s-name">开头段 · 广告识别</div><p>「甲方」「猝不及防」集中出现，识别率 10.17%</p></div>
-          <div class="stage"><div class="s-pct" style="color:#a78bfa">31.1%</div><div class="s-name">中段 · 品牌讨论</div><p>识别率最高 10.98%，广告进入内容语境</p></div>
-          <div class="stage"><div class="s-pct" style="color:#34d399">21.7%</div><div class="s-name">结尾段 · 态度表达</div><p>好感比 0.909、行动意图 6.7 集中于结尾</p></div>
+          <div class="stage"><div class="s-pct" style="color:#38bdf8">47.0%</div><div class="s-name">开头段 · 广告识别</div><p>「甲方」「猝不及防」集中出现，识别率 4.7%</p></div>
+          <div class="stage"><div class="s-pct" style="color:#a78bfa">31.6%</div><div class="s-name">中段 · 品牌讨论</div><p>品牌正面讨论占比升至 4.5%</p></div>
+          <div class="stage"><div class="s-pct" style="color:#34d399">21.4%</div><div class="s-name">结尾段 · 种草时刻</div><p>品牌正面率最高 6.0%，「买了」「种草」集中出现</p></div>
         </div>
       </div>
     </div>
@@ -104,42 +102,28 @@
         <div class="chart-body" id="anomalyBar"></div>
       </div>
       <div class="chart-card reveal">
-        <div class="chart-title">广告识别率分段落差</div>
-        <div class="chart-sub">中段 10.98% &gt; 开头 10.17% &gt; 结尾 7.29%</div>
+        <div class="chart-title">品牌正面率：结尾种草</div>
+        <div class="chart-sub">开头 2.7% → 结尾 6.0%，「买了」「种草」集中在结尾</div>
         <div class="chart-body" id="recogBar"></div>
       </div>
     </div>
   </section>
 
   <section class="section" style="padding-top:8px">
-    <div class="chart-card reveal">
-      <div class="chart-title">12 品牌 × 10 视频的行为模式分布</div>
-      <div class="chart-sub">引爆型 / 跳过型 / 无感型 / 沉默型——闲鱼 9/10 无感 + 1 条引爆：争议集中而非普遍</div>
-      <div class="chart-body" id="behaviorStack"></div>
-    </div>
-  </section>
-
-  <section class="section" style="padding-top:8px">
     <div class="section-head reveal">
-      <div class="section-kicker">Survey</div>
-      <h2 class="section-title">问卷交叉验证：接受 ≠ 购买</h2>
+      <div class="section-kicker">Silence</div>
+      <h2 class="section-title">广告时段的真实反应：沉默</h2>
     </div>
-    <div class="kpi-row reveal" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
-      <div class="kpi"><div class="kpi-num" data-count="86.8" data-decimals="1" data-suffix="%">0</div><div class="kpi-label">植入广告接受度</div></div>
-      <div class="kpi"><div class="kpi-num" data-count="55.6" data-decimals="1" data-suffix="%">0</div><div class="kpi-label">经弹幕感知广告</div></div>
-      <div class="kpi"><div class="kpi-num" data-count="0.733">0</div><div class="kpi-label">搜索→购买 β（R²=0.530）</div></div>
-      <div class="kpi"><div class="kpi-num" data-count="66.7" data-decimals="1" data-suffix="%">0</div><div class="kpi-label">内容质量影响接受度</div></div>
-    </div>
-    <div class="findings reveal" style="margin-top:20px">
-      <div class="finding">
-        <div class="f-tag">断层解释</div>
-        <h4>接受度与购买行为无显著相关</h4>
-        <p>接受度均值 1.87 vs 购买频率 2.89，Spearman r = -0.023——「接受广告」不等于「产生购买」，三阶段时序从行为侧解释了这个断层。</p>
+    <div class="wide-charts">
+      <div class="chart-card reveal">
+        <div class="chart-title">弹幕密度对比（条/秒，中位数）</div>
+        <div class="chart-sub">广告段密度只有非广告段的一半——90/120 视频广告时段弹幕减少</div>
+        <div class="chart-body" id="densityCompare"></div>
       </div>
-      <div class="finding">
-        <div class="f-tag">行动路径</div>
-        <h4>搜索是唯一显著预测变量</h4>
-        <p>回归分析中搜索行为是购买行为的唯一显著预测变量（β = 0.733，R² = 0.530）——广告效果评估应聚焦「是否触发搜索」。</p>
+      <div class="chart-card reveal">
+        <div class="chart-title">广告识别关键词 Top 8</div>
+        <div class="chart-sub">「甲方」659 次 &gt; 「广告」440 次——识别靠 B站社区黑话</div>
+        <div class="chart-body" id="blackTalk"></div>
       </div>
     </div>
   </section>
@@ -174,7 +158,7 @@
   var pos = 0;
   var COLORS = ["#e8edf7", "#e8edf7", "#e8edf7", "#fb7299", "#7dd3fc", "#fbbf24"];
   function spawn() {
-    if (!box.isConnected || box.children.length > 70) return;
+    if (!box.isConnected || box.children.length > 90) return;
     var d = pool[pos];
     pos = (pos + 1) % pool.length;
     if (pos === 0) pool = shuffle(pool);
@@ -189,13 +173,13 @@
     box.appendChild(span);
   }
   /* 初始涌入 + 持续生成 */
-  for (var i = 0; i < 22; i++) setTimeout(spawn, i * 110);
-  setInterval(spawn, 240);
+  for (var i = 0; i < 28; i++) setTimeout(spawn, i * 90);
+  setInterval(spawn, 180);
 })();
 
 Chart.donut(document.getElementById("stageDonut"), {
   labels: ["开头段", "中段", "结尾段"],
-  values: [47.3, 31.1, 21.7],
+  values: [47.0, 31.6, 21.4],
   centerText: "57.9万",
   centerLabel: "弹幕总量"
 });
@@ -208,21 +192,24 @@ Chart.hbar(document.getElementById("anomalyBar"), {
 });
 Chart.bar(document.getElementById("recogBar"), {
   labels: ["开头段", "中段", "结尾段"],
-  series: [{ name: "广告识别率 %", values: [10.17, 10.98, 7.29], color: "#38bdf8" }],
+  series: [{ name: "品牌正面率 %", values: [2.7, 4.5, 6.0], color: "#34d399" }],
   clean: true,
   height: 230
 });
-Chart.bar(document.getElementById("behaviorStack"), {
-  labels: ["京东","淘宝","美团","夸克","闲鱼","妙界","1688","友望","云鲸","扫描全能王","得物","转转"],
-  series: [
-    { name: "引爆型", values: [1,0,0,1,1,0,0,0,0,0,1,1], color: "#f87171" },
-    { name: "跳过型", values: [0,0,0,0,0,0,0,0,2,0,1,0], color: "#fbbf24" },
-    { name: "无感型", values: [6,5,7,4,9,5,9,6,6,4,5,5], color: "#38bdf8" },
-    { name: "沉默型", values: [3,5,3,5,0,5,1,4,2,6,3,4], color: "#5d6b85" }
-  ],
-  stacked: true,
+/* 弹幕密度对比（中位数 dm/s）——广告段沉默是主流 */
+Chart.bar(document.getElementById("densityCompare"), {
+  labels: ["非广告段", "广告段"],
+  series: [{ name: "弹幕密度（条/秒）", values: [13.21, 6.03], color: "#38bdf8" }],
   clean: true,
-  height: 320
+  height: 260
+});
+/* 广告识别关键词 Top 8（B站社区黑话，灰色 = 直白词参照） */
+Chart.hbar(document.getElementById("blackTalk"), {
+  labels: ["甲方", "猝不及防", "金主", "广告", "零帧", "快跑", "空降", "广子"],
+  values: [659, 593, 468, 440, 273, 249, 176, 149],
+  colors: ["#38bdf8", "#38bdf8", "#38bdf8", "#5d6b85", "#38bdf8", "#38bdf8", "#38bdf8", "#38bdf8"],
+  clean: true,
+  height: 300
 });
 </script>
 </body>

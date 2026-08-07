@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>汽车品牌社交媒体用户画像与消费者洞察研究 · SanZiNEO 作品集</title>
-<meta name="description" content="24 个汽车品牌微博消费者画像：7 大维度画像体系 + 10 大兴趣领域渗透模型。">
+<meta name="description" content="20 个汽车品牌微博消费者画像：7 大维度画像体系 + 10 大兴趣领域渗透模型。">
 <link rel="stylesheet" href="../../assets/css/style.css">
 </head>
 <body>
@@ -22,10 +22,10 @@
     <div class="crumbs reveal"><a href="../../index.html">首页</a> / 汽车画像</div>
     <h1 class="proj-hero-title reveal" style="--d:.05s">汽车品牌社交媒体<br>用户画像与消费者洞察</h1>
     <p class="proj-hero-desc reveal" style="--d:.1s">
-      24 个汽车品牌的消费者画像研究——兴趣渗透、性别结构、关注生态，一键切换对比维度。
+      20 个汽车品牌的消费者画像研究——兴趣渗透、性别结构、核心用户。
     </p>
     <div class="proj-hero-nums reveal" style="--d:.15s">
-      <div class="proj-hero-num"><b data-count="24">0</b><span>汽车品牌</span></div>
+      <div class="proj-hero-num"><b data-count="20">0</b><span>汽车品牌</span></div>
       <div class="proj-hero-num"><b data-count="7292">0</b><span>评论用户</span></div>
       <div class="proj-hero-num"><b data-count="110" data-suffix="万+">0</b><span>关注关系</span></div>
     </div>
@@ -38,15 +38,11 @@
     <div class="tab-bar" id="chartTabs">
       <button class="tab-btn on" type="button" data-tab="radar">兴趣渗透</button>
       <button class="tab-btn" type="button" data-tab="gender">性别结构</button>
-      <button class="tab-btn" type="button" data-tab="follow">关注结构</button>
-      <button class="tab-btn" type="button" data-tab="sentiment">情感结构</button>
       <button class="tab-btn" type="button" data-tab="core">核心用户</button>
     </div>
     <div class="big-chart on" id="bigRadar"></div>
-    <div class="big-chart" id="bigGender"></div>
-    <div class="big-chart" id="bigFollow"></div>
-    <div class="big-chart" id="bigSentiment"></div>
-    <div class="big-chart" id="bigCore"></div>
+    <div class="big-chart" id="bigGender"><div class="chart-title" style="text-align:center">男性用户占比</div></div>
+    <div class="big-chart" id="bigCore"><div class="chart-title" style="text-align:center">核心用户占比</div></div>
   </div>
 </header>
 
@@ -54,16 +50,12 @@
 
   <section class="section" style="padding-top:8px">
     <div class="section-head reveal">
-      <div class="section-kicker">Framework</div>
-      <h2 class="section-title">7 大维度画像体系</h2>
+      <div class="section-kicker">Value</div>
+      <h2 class="section-title">20 品牌核心用户占比排行</h2>
     </div>
-    <div class="interest-strip reveal">
-      <span class="tag">人口属性</span><span class="tag">社交影响力</span><span class="tag">品牌互动</span><span class="tag">兴趣领域</span><span class="tag">关注结构</span><span class="tag">用户价值</span><span class="tag">综合宽表</span>
-      <span class="tag">+ 10 大兴趣领域</span><span class="tag">娱乐明星</span><span class="tag">影视动漫</span><span class="tag">游戏电竞</span><span class="tag">科技数码</span><span class="tag">汽车</span><span class="tag">体育运动</span><span class="tag">财经商业</span><span class="tag">时尚美妆</span><span class="tag">生活美食</span><span class="tag">新闻知识</span>
+    <div class="chart-card reveal">
+      <div class="chart-body" id="coreRank"></div>
     </div>
-    <p class="chapter-body reveal" style="margin-top:12px;max-width:900px">
-      每个品牌独立产出 11 张画像图表；全局 22 张跨品牌对比图表。
-    </p>
   </section>
 
 </main>
@@ -120,24 +112,6 @@ var gender = Chart.bar(document.getElementById("bigGender"), {
   baseline: { value: AVG.malePct, label: "市场平均 " + AVG.malePct + "%" },
   clean: true, height: 420
 });
-var follow = Chart.bar(document.getElementById("bigFollow"), {
-  labels: ["市场平均"].concat(activeNames()),
-  series: [
-    { name: "官方账号 %", values: [AVG.officialPct].concat(activeNames().map(function (n) { return statOf[n].officialPct; })), color: "#38bdf8" },
-    { name: "个人KOL %", values: [AVG.kolPct].concat(activeNames().map(function (n) { return statOf[n].kolPct; })), color: "#a78bfa" },
-    { name: "素人 %", values: [AVG.amateurPct].concat(activeNames().map(function (n) { return statOf[n].amateurPct; })), color: "#5d6b85" }
-  ],
-  clean: true, height: 420
-});
-var sentiment = Chart.bar(document.getElementById("bigSentiment"), {
-  labels: ["市场平均"].concat(activeNames()),
-  series: [
-    { name: "中性 %", values: [AVG_NEUTRAL].concat(activeNames().map(function (n) { return +(100 - statOf[n].posPct - statOf[n].negPct).toFixed(1); })), color: "#5d6b85" },
-    { name: "正面 %", values: [AVG.posPct].concat(activeNames().map(function (n) { return statOf[n].posPct; })), color: "#34d399" },
-    { name: "负面 %", values: [AVG.negPct].concat(activeNames().map(function (n) { return statOf[n].negPct; })), color: "#f87171" }
-  ],
-  clean: true, height: 420
-});
 var core = Chart.bar(document.getElementById("bigCore"), {
   labels: activeNames(),
   series: [{ name: "核心用户占比 %", values: activeNames().map(function (n) { return statOf[n].corePct; }), color: "#a78bfa" }],
@@ -149,18 +123,21 @@ function refreshCurrent() {
   var names = activeNames();
   if (current === "radar") radar.update(names);
   else if (current === "gender") gender.update(names, [{ name: "男性占比 %", values: names.map(function (n) { return statOf[n].malePct; }), color: "#38bdf8" }]);
-  else if (current === "follow") follow.update(["市场平均"].concat(names), [
-    { name: "官方账号 %", values: [AVG.officialPct].concat(names.map(function (n) { return statOf[n].officialPct; })), color: "#38bdf8" },
-    { name: "个人KOL %", values: [AVG.kolPct].concat(names.map(function (n) { return statOf[n].kolPct; })), color: "#a78bfa" },
-    { name: "素人 %", values: [AVG.amateurPct].concat(names.map(function (n) { return statOf[n].amateurPct; })), color: "#5d6b85" }
-  ]);
-  else if (current === "sentiment") sentiment.update(["市场平均"].concat(names), [
-    { name: "中性 %", values: [AVG_NEUTRAL].concat(names.map(function (n) { return +(100 - statOf[n].posPct - statOf[n].negPct).toFixed(1); })), color: "#5d6b85" },
-    { name: "正面 %", values: [AVG.posPct].concat(names.map(function (n) { return statOf[n].posPct; })), color: "#34d399" },
-    { name: "负面 %", values: [AVG.negPct].concat(names.map(function (n) { return statOf[n].negPct; })), color: "#f87171" }
-  ]);
   else if (current === "core") core.update(names, [{ name: "核心用户占比 %", values: names.map(function (n) { return statOf[n].corePct; }), color: "#a78bfa" }]);
 }
+
+/* 20 品牌核心用户占比排行（降序，前三高亮） */
+(function () {
+  var sorted = ST.slice().sort(function (a, b) { return b.corePct - a.corePct; });
+  Chart.hbar(document.getElementById("coreRank"), {
+    labels: sorted.map(function (s) { return s.name; }),
+    values: sorted.map(function (s) { return s.corePct; }),
+    unit: "%",
+    colors: sorted.map(function (s, i) { return i < 3 ? "#38bdf8" : "#5d6b85"; }),
+    clean: true,
+    height: 560
+  });
+})();
 
 /* ---- 品牌选择 ---- */
 var picker = document.getElementById("brandPicker");
@@ -197,7 +174,7 @@ select.addEventListener("change", function () {
 
 /* ---- 标签卡切换 ---- */
 var tabs = document.getElementById("chartTabs");
-var bigs = { radar: document.getElementById("bigRadar"), gender: document.getElementById("bigGender"), follow: document.getElementById("bigFollow"), sentiment: document.getElementById("bigSentiment"), core: document.getElementById("bigCore") };
+var bigs = { radar: document.getElementById("bigRadar"), gender: document.getElementById("bigGender"), core: document.getElementById("bigCore") };
 tabs.addEventListener("click", function (e) {
   var btn = e.target.closest(".tab-btn");
   if (!btn) return;

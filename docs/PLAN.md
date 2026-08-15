@@ -26,7 +26,7 @@ SanZiNEO.github.io/
 │   ├── tourism/
 │   │   └── index.html            # 短视频视域下鲁豫文旅品牌数字化传播效能研究
 │   └── gaming/
-│       └── index.html            # 游戏互动产品创新与商业化探索
+│       └── index.html            # 游戏互动产品设计与开发
 └── assets/
     └── images/                   # 图表截图、项目素材
         ├── coffee/

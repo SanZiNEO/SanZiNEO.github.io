@@ -2,7 +2,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import {
-  Board, legalMoves, legalMovesFrom, applyMove, checkWinner,
+  Board, legalMoves, legalMovesFrom, applyMove as engineApplyMove, checkWinner,
   selectMove, resolveDirections, addVec, pk, parsePoint,
 } from "./engine.js";
 
@@ -367,7 +367,7 @@ function applyMove(path) {
 }
 
 function applyMoveToState(path, player) {
-  applyMove(state.board, path, player, state.config);
+  engineApplyMove(state.board, path, player, state.config);
   state.history.push({ player, path: path.map(p => p.slice()) });
   state.pieceSnapshots.push(new Map(state.board.pieces));
   state.winner = checkWinner(state.board, state.config);

@@ -554,8 +554,33 @@ function playMoveAnimation(path, player) {
 
 /* ---------------- 游戏流程 ---------------- */
 
+function colorToCss(value) {
+  return "#" + value.toString(16).padStart(6, "0");
+}
+
+function updatePlayerRoster() {
+  const roster = document.getElementById("player-roster");
+  if (!roster) return;
+  roster.innerHTML = "";
+  const count = (state.config && state.config.players) || 0;
+  for (let i = 1; i <= count; i++) {
+    const chip = document.createElement("div");
+    chip.className = "player-chip" + (i === state.currentPlayer ? " active" : "");
+    const color = colorToCss(PLAYER_COLORS[(i - 1) % PLAYER_COLORS.length]);
+    chip.innerHTML = `<span class="player-dot" style="background:${color}"></span><span>玩家 ${i}</span>`;
+    roster.appendChild(chip);
+  }
+}
+
 function setStatus(text) {
   document.getElementById("status-text").textContent = text;
+  const statusEl = document.getElementById("status-text");
+  if (state.board && !state.winner) {
+    statusEl.style.color = colorToCss(PLAYER_COLORS[(state.currentPlayer - 1) % PLAYER_COLORS.length]);
+  } else {
+    statusEl.style.color = "#1f2937";
+  }
+  updatePlayerRoster();
 }
 
 function advanceTurn() {

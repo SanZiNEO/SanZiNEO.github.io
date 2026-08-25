@@ -56,6 +56,10 @@ function updateGeometryFields() {
   document.getElementById("board-size-field").classList.toggle("hidden", g !== "A");
   document.getElementById("radius-field").classList.toggle("hidden", !(g === "B" || g === "C"));
   document.getElementById("ep-side-field").classList.toggle("hidden", !["D", "A_EXT", "B_EXT", "C_EXT"].includes(g));
+
+  // A / A-ext 方向可配置；B/C/D/B-ext/C-ext 方向固定，隐藏方向设置
+  const directionConfigurable = g === "A" || g === "A_EXT";
+  document.getElementById("direction-section").classList.toggle("hidden", !directionConfigurable);
 }
 
 function renderAiPlayerMenu() {

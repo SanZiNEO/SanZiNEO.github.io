@@ -74,6 +74,7 @@ function renderAiPlayerMenu() {
     const cb = document.createElement("input");
     cb.type = "checkbox";
     cb.dataset.aiPlayer = String(i);
+    cb.checked = i === 2; // 默认 2 人局时 P2 为 AI
     const span = document.createElement("span");
     span.textContent = "P" + i + " AI";
     label.appendChild(cb);
@@ -261,7 +262,8 @@ function getCenter() {
 function centerCameraOn() {
   const center = getCenter();
   const span = Math.max(center[0] * 2, center[1] * 2, center[2] * 2, 2) * 1.4;
-  state.camera.position.set(span * 0.9, span * 0.7, span * 0.9);
+  const dist = span * 1.25;
+  state.camera.position.set(dist, span * 0.85, dist);
   state.camera.lookAt(0, 0, 0);
   state.controls.target.set(0, 0, 0);
   state.controls.update();

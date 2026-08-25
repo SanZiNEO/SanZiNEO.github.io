@@ -171,7 +171,7 @@ function selectedAiTypes() {
 function initScene() {
   const container = document.getElementById("scene-container");
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x101418);
+  scene.background = new THREE.Color(0xf2f5f9);
   const camera = new THREE.PerspectiveCamera(55, 1, 0.1, 2000);
   camera.position.set(18, 14, 18);
   camera.lookAt(0, 0, 0);
@@ -277,7 +277,7 @@ function renderBoard() {
   const pointPositions = [];
   for (const p of board.points) pointPositions.push(...worldPos(p, center));
   pointGeo.setAttribute("position", new THREE.Float32BufferAttribute(pointPositions, 3));
-  const pointMat = new THREE.PointsMaterial({ color: 0x9aa7b5, size: 0.08, sizeAttenuation: true });
+  const pointMat = new THREE.PointsMaterial({ color: 0x7c8b9a, size: 0.08, sizeAttenuation: true });
   state.pointGroup.add(new THREE.Points(pointGeo, pointMat));
 
   // 路线
@@ -285,7 +285,7 @@ function renderBoard() {
   if (verts.length) {
     const routeGeo = new THREE.BufferGeometry();
     routeGeo.setAttribute("position", new THREE.Float32BufferAttribute(verts, 3));
-    const routeMat = new THREE.LineBasicMaterial({ color: 0x556677, transparent: true, opacity: 0.35 });
+    const routeMat = new THREE.LineBasicMaterial({ color: 0x8fa3b8, transparent: true, opacity: 0.45 });
     state.routeGroup.add(new THREE.LineSegments(routeGeo, routeMat));
   }
 

@@ -7,6 +7,12 @@ import {
 } from "./engine.js";
 
 const PLAYER_COLORS = [0xff5252, 0x448aff, 0x43a047, 0xfb8c00, 0x8e24aa, 0x00bcd4, 0xffd54f, 0x6d4c41];
+const ROUTE_COLORS = {
+  axis6: 0xc3cdd8,
+  face12: 0xc3d8c3,
+  body8: 0xd2c3d8,
+  custom: 0xd8cfc3,
+};
 const AI_TYPES = [
   ["distance_graph", "图距离 BFS"],
   ["distance_euclidean", "欧氏距离"],
@@ -195,7 +201,8 @@ function initScene() {
   state.pointGroup = new THREE.Group();
   state.routeGroup = new THREE.Group();
   state.highlightGroup = new THREE.Group();
-  scene.add(state.pointGroup, state.routeGroup, state.pieceGroup, state.highlightGroup);
+  // 线先画、点后画，避免路线遮住点阵
+  scene.add(state.routeGroup, state.pointGroup, state.pieceGroup, state.highlightGroup);
 
   function resize() {
     const w = container.clientWidth || 800;
@@ -236,6 +243,15 @@ function getCenter() {
   return [(min[0]+max[0])/2, (min[1]+max[1])/2, (min[2]+max[2])/2];
 }
 
+function centerCameraOn() {
+  const center = getCenter();
+  const span = Math.max(center[0] * 2, center[1] * 2, center[2] * 2, 2) * 1.4;
+  state.camera.position.set(span * 0.9, span * 0.7, span * 0.9);
+  state.camera.lookAt(0, 0, 0);
+  state.controls.target.set(0, 0, 0);
+  state.controls.update();
+}
+
 function clearGroup(group) {
   while (group.children.length) {
     const obj = group.children.pop();
@@ -244,11 +260,72 @@ function clearGroup(group) {
   }
 }
 
-function buildRouteVertices() {
+let dotTexture = null;
+function getDotTexture() {
+  if (dotTexture) return dotTexture;
+  const canvas = document.createElement("canvas");
+  canvas.width = 64;
+  canvas.height = 64;
+  const ctx = canvas.getContext("2d");
+  ctx.beginPath();
+  ctx.arc(32, 32, 30, 0, Math.PI * 2);
+  ctx.fillStyle = "#333333";
+  ctx.fill();
+  dotTexture = new THREE.CanvasTexture(canvas);
+  return dotTexture;
+}
+
+function buildPointCloud(points, excludeBaseKeys) {
+  const positions = [];
+  for (const p of points) {
+    const key = pk(p);
+    if (excludeBaseKeys && excludeBaseKeys.has(key)) continue;
+    positions.push(...worldPos(p, getCenter()));
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+  const mat = new THREE.PointsMaterial({
+    color: 0x555555,
+    size: 0.1,
+    sizeAttenuation: true,
+    map: getDotTexture(),
+    transparent: true,
+  });
+  return new THREE.Points(geo, mat);
+}
+
+function buildBasePointCloud(points, color) {
+  const positions = [];
+  for (const p of points) positions.push(...worldPos(p, getCenter()));
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+  const mat = new THREE.PointsMaterial({
+    color,
+    size: 0.12,
+    sizeAttenuation: true,
+    map: getDotTexture(),
+    transparent: true,
+    opacity: 0.85,
+  });
+  return new THREE.Points(geo, mat);
+}
+
+function routeTypeOf(v) {
+  const nz = v.reduce((s, c) => s + (c !== 0 ? 1 : 0), 0);
+  const maxAbs = Math.max(...v.map(Math.abs));
+  if (maxAbs === 1 && nz === 1) return "axis6";
+  if (maxAbs === 1 && nz === 2) return "face12";
+  if (maxAbs === 1 && nz === 3) return "body8";
+  return "custom";
+}
+
+function rebuildRoutes() {
   const board = state.board;
   const dirs = resolveDirections(board.config.direction_set, board.config.custom_vectors);
   const seen = new Set();
-  const verts = [];
+  const byType = {};
+  const center = getCenter();
+
   for (const p of board.points) {
     for (const v of dirs) {
       const q = addVec(p, v);
@@ -257,45 +334,67 @@ function buildRouteVertices() {
       const key = a < b ? a + "|" + b : b + "|" + a;
       if (seen.has(key)) continue;
       seen.add(key);
-      verts.push(...p, ...q);
+      const type = routeTypeOf(v);
+      if (!byType[type]) byType[type] = [];
+      byType[type].push([p, q]);
     }
   }
-  return verts;
+
+  for (const [type, list] of Object.entries(byType)) {
+    const positions = [];
+    for (const [p, q] of list) positions.push(...worldPos(p, center), ...worldPos(q, center));
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+    const mat = new THREE.LineBasicMaterial({
+      color: ROUTE_COLORS[type] || 0xcccccc,
+      transparent: true,
+      opacity: 0.2,
+    });
+    state.routeGroup.add(new THREE.LineSegments(geo, mat));
+  }
 }
 
 function renderBoard() {
   const board = state.board;
   const center = getCenter();
 
-  clearGroup(state.pointGroup);
   clearGroup(state.routeGroup);
+  clearGroup(state.pointGroup);
   clearGroup(state.pieceGroup);
   state.pieceMeshes = [];
 
-  // 点阵
-  const pointGeo = new THREE.BufferGeometry();
-  const pointPositions = [];
-  for (const p of board.points) pointPositions.push(...worldPos(p, center));
-  pointGeo.setAttribute("position", new THREE.Float32BufferAttribute(pointPositions, 3));
-  const pointMat = new THREE.PointsMaterial({ color: 0x7c8b9a, size: 0.08, sizeAttenuation: true });
-  state.pointGroup.add(new THREE.Points(pointGeo, pointMat));
+  // 先画路线（底层）
+  rebuildRoutes();
 
-  // 路线
-  const verts = buildRouteVertices();
-  if (verts.length) {
-    const routeGeo = new THREE.BufferGeometry();
-    routeGeo.setAttribute("position", new THREE.Float32BufferAttribute(verts, 3));
-    const routeMat = new THREE.LineBasicMaterial({ color: 0x8fa3b8, transparent: true, opacity: 0.45 });
-    state.routeGroup.add(new THREE.LineSegments(routeGeo, routeMat));
+  // 再画点阵（上层，避免路线遮住点）
+  const baseKeys = new Set();
+  const baseLists = [];
+  for (const [playerStr, set] of Object.entries(board.playerBases)) {
+    const player = Number(playerStr);
+    const list = [];
+    for (const key of set) {
+      baseKeys.add(key);
+      list.push(parsePoint(key));
+    }
+    baseLists.push({ player, list });
   }
 
-  // 棋子
+  state.pointGroup.add(buildPointCloud(board.points, baseKeys));
+  for (const { player, list } of baseLists) {
+    state.pointGroup.add(buildBasePointCloud(list, PLAYER_COLORS[(player - 1) % PLAYER_COLORS.length]));
+  }
+
+  // 棋子（使用和本地一致的 Phong 材质）
   const sphereGeo = new THREE.SphereGeometry(0.32, 18, 18);
   for (const [key, owner] of board.pieces) {
     const p = parsePoint(key);
     const mesh = new THREE.Mesh(
       sphereGeo,
-      new THREE.MeshStandardMaterial({ color: PLAYER_COLORS[(owner - 1) % PLAYER_COLORS.length], roughness: 0.35 })
+      new THREE.MeshPhongMaterial({
+        color: PLAYER_COLORS[(owner - 1) % PLAYER_COLORS.length],
+        emissive: PLAYER_COLORS[(owner - 1) % PLAYER_COLORS.length],
+        emissiveIntensity: 0.15,
+      })
     );
     mesh.position.set(...worldPos(p, center));
     mesh.userData = { pos: p, player: owner };
@@ -303,12 +402,7 @@ function renderBoard() {
     state.pieceMeshes.push(mesh);
   }
 
-  // 相机适配
-  const span = Math.max(center[0] * 2, center[1] * 2, center[2] * 2, 2) * 1.4;
-  state.camera.position.set(span * 0.9, span * 0.7, span * 0.9);
-  state.camera.lookAt(0, 0, 0);
-  state.controls.target.set(0, 0, 0);
-  state.controls.update();
+  // 视角不在这里重置，只在开局时居中一次
 }
 
 function clearHighlights() {
@@ -491,6 +585,7 @@ function startGame() {
     state.aiTypes = selectedAiTypes();
     state.initialPieces = new Map(state.board.pieces);
     renderBoard();
+    centerCameraOn();
     clearHighlights();
     setStatus("P1 玩家");
     document.getElementById("ai-move-btn").disabled = false;

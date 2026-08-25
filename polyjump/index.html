@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>三维跳棋 · PolyJump</title>
+<link rel="stylesheet" href="css/style.css">
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+<div class="wrapper">
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">PolyJump</span>
+      <span class="sub">三维跳棋 · 可玩演示</span>
+    </div>
+    <a class="github-link" href="https://github.com/SanZiNEO/poly-jump" target="_blank" rel="noopener">GitHub ↗</a>
+  </header>
+
+  <section class="layout">
+
+    <aside class="menu-panel">
+      <h2>开局设置</h2>
+
+      <label class="field">
+        <span>几何模型</span>
+        <select id="geometry">
+          <option value="A" selected>A · 标准 XYZ 网格</option>
+          <option value="B">B · 偶子晶格 12向</option>
+          <option value="C">C · L1 全整数 20向</option>
+          <option value="D">D · 外接金字塔 14向</option>
+          <option value="A_EXT">A-ext · 外接金字塔可配向</option>
+          <option value="B_EXT">B-ext · 外接金字塔 12向</option>
+          <option value="C_EXT">C-ext · 外接金字塔 20向</option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span>玩家数</span>
+        <select id="players">
+          <option value="2" selected>2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="6">6</option>
+          <option value="8">8</option>
+        </select>
+      </label>
+
+      <label class="field hidden" id="board-size-field">
+        <span>A 模型尺寸 x,y,z</span>
+        <input id="board-size" type="text" value="7,7,7">
+      </label>
+
+      <label class="field hidden" id="radius-field">
+        <span>B/C 半径（偶数）</span>
+        <input id="radius" type="number" value="4" min="2" max="10" step="2">
+      </label>
+
+      <label class="field hidden" id="ep-side-field">
+        <span>外接金字塔中心边长（奇数）</span>
+        <input id="ep-side" type="number" value="5" min="3" max="9" step="2">
+      </label>
+
+      <h3>方向</h3>
+      <div class="switch-list">
+        <label class="switch-row"><input type="checkbox" id="dir6" checked><span>6 向</span></label>
+        <label class="switch-row"><input type="checkbox" id="dir12" checked><span>12 向</span></label>
+        <label class="switch-row"><input type="checkbox" id="dir8" checked><span>8 向</span></label>
+        <label class="switch-row"><input type="checkbox" id="dir2140"><span>2:1:0 自定义</span></label>
+        <label class="switch-row"><input type="checkbox" id="dir2221"><span>2:2:1 自定义</span></label>
+      </div>
+
+      <h3>规则</h3>
+      <div class="switch-list">
+        <label class="switch-row"><input type="checkbox" id="allow-step" checked><span>单步</span></label>
+        <label class="switch-row"><input type="checkbox" id="allow-jump" checked><span>跳跃</span></label>
+        <label class="switch-row"><input type="checkbox" id="allow-chain" checked><span>连跳</span></label>
+        <label class="switch-row"><input type="checkbox" id="allow-two-step"><span>两步跳</span></label>
+        <label class="switch-row"><input type="checkbox" id="capture-in-base"><span>基地内吃子</span></label>
+      </div>
+
+      <label class="field">
+        <span>连跳模式</span>
+        <select id="hop-mode">
+          <option value="FREE_STOP" selected>自由停</option>
+          <option value="FORCE_ALL">必须跳到底</option>
+        </select>
+      </label>
+
+      <label class="field">
+        <span>对局模式</span>
+        <select id="capture-mode">
+          <option value="NONE" selected>中国跳棋</option>
+          <option value="CAPTURE">西洋跳棋</option>
+          <option value="MIXED">混合</option>
+        </select>
+      </label>
+
+      <h3>AI 玩家</h3>
+      <div id="ai-player-menu" class="switch-list"></div>
+
+      <button id="start-btn" class="primary-btn">开始游戏</button>
+      <p id="menu-error" class="error"></p>
+    </aside>
+
+    <section class="game-panel">
+      <div class="hud">
+        <span id="status-text">未开始</span>
+        <button id="ai-move-btn" disabled>AI 走一步</button>
+        <button id="restart-btn">重新开局</button>
+      </div>
+      <div id="scene-container"></div>
+      <div class="replay-bar">
+        <button id="replay-start" disabled>⏮</button>
+        <button id="replay-prev" disabled>◀</button>
+        <button id="replay-next" disabled>▶</button>
+        <button id="replay-end" disabled>⏭</button>
+        <button id="replay-auto" disabled>自动播放</button>
+      </div>
+    </section>
+
+  </section>
+
+  <footer class="footer">
+    <p><a href="https://github.com/SanZiNEO/poly-jump" target="_blank" rel="noopener">PolyJump 开源项目源码 →</a></p>
+  </footer>
+</div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

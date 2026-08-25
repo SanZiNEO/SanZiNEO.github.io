@@ -44,6 +44,9 @@ const state = {
   highlightGroup: null,
   pieceMeshes: [],
   highlightMeshes: [],
+  animationEnabled: true,
+  animationSpeed: 0.125,
+  animationGroup: null,
 };
 
 /* ---------------- 菜单 ---------------- */
@@ -455,6 +458,94 @@ function showHighlights(paths) {
   state.selectedPos = paths.length ? paths[0][0] : null;
 }
 
+/* ---------------- 动画 ---------------- */
+
+function clearMoveAnimation() {
+  if (state.animationGroup) {
+    state.scene.remove(state.animationGroup);
+    while (state.animationGroup.children.length) {
+      const child = state.animationGroup.children.pop();
+      if (child.geometry) child.geometry.dispose();
+      if (child.material) child.material.dispose();
+    }
+    state.animationGroup = null;
+  }
+}
+
+function playMoveAnimation(path, player) {
+  return new Promise((resolve) => {
+    if (!state.animationEnabled || !state.scene || !path || path.length < 2) {
+      resolve();
+      return;
+    }
+    clearMoveAnimation();
+
+    const startKey = pk(path[0]);
+    const mesh = state.pieceMeshes.find((m) => pk(m.userData.pos) === startKey);
+    if (!mesh) {
+      resolve();
+      return;
+    }
+
+    const center = getCenter();
+    const worldPath = path.map((p) => worldPos(p, center));
+    const group = new THREE.Group();
+    state.animationGroup = group;
+    state.scene.add(group);
+
+    const linePts = worldPath.map((p) => new THREE.Vector3(p[0], p[1], p[2]));
+    const lineGeo = new THREE.BufferGeometry().setFromPoints(linePts);
+    const lineMat = new THREE.LineBasicMaterial({
+      color: 0x111111,
+      transparent: true,
+      opacity: 0.95,
+    });
+    group.add(new THREE.Line(lineGeo, lineMat));
+
+    const segLen = [];
+    const cum = [0];
+    let totalLen = 0;
+    for (let i = 0; i < worldPath.length - 1; i++) {
+      const a = worldPath[i], b = worldPath[i + 1];
+      const l = Math.hypot(b[0]-a[0], b[1]-a[1], b[2]-a[2]);
+      segLen.push(l);
+      totalLen += l;
+      cum.push(totalLen);
+    }
+
+    const duration = Math.max(0.05, totalLen * state.animationSpeed) * 1000;
+    const start = performance.now();
+
+    function pointAt(target) {
+      let idx = 0;
+      while (idx < segLen.length - 1 && target > cum[idx + 1]) idx++;
+      const segStart = cum[idx];
+      const segEnd = cum[idx + 1];
+      const frac = segEnd > segStart ? (target - segStart) / (segEnd - segStart) : 0;
+      const a = worldPath[idx], b = worldPath[idx + 1];
+      return [
+        a[0] + (b[0] - a[0]) * frac,
+        a[1] + (b[1] - a[1]) * frac,
+        a[2] + (b[2] - a[2]) * frac,
+      ];
+    }
+
+    function tick(now) {
+      const t = Math.min(1, (now - start) / duration);
+      const pos = pointAt(t * totalLen);
+      mesh.position.set(pos[0], pos[1], pos[2]);
+      if (t < 1) {
+        requestAnimationFrame(tick);
+      } else {
+        clearMoveAnimation();
+        resolve();
+      }
+    }
+
+    requestAnimationFrame(tick);
+  });
+}
+
 /* ---------------- 游戏流程 ---------------- */
 
 function setStatus(text) {
@@ -470,12 +561,13 @@ function advanceTurn() {
   }
 }
 
-function applyMove(path) {
+async function applyMove(path) {
   const player = state.currentPlayer;
-  applyMoveToState(path, player);
+  await applyMoveToState(path, player);
 }
 
-function applyMoveToState(path, player) {
+async function applyMoveToState(path, player) {
+  await playMoveAnimation(path, player);
   engineApplyMove(state.board, path, player, state.config);
   state.history.push({ player, path: path.map(p => p.slice()) });
   state.pieceSnapshots.push(new Map(state.board.pieces));
@@ -511,7 +603,7 @@ async function handleAiMove() {
   const aiType = state.aiTypes[player] || "distance_graph";
   const move = selectMove(state.board, player, paths, aiType);
   if (!move) return;
-  applyMoveToState(move, player);
+  await applyMoveToState(move, player);
 }
 
 function onClick(e) {
@@ -599,6 +691,7 @@ function startGame() {
     state.aiPlayers = selectedAiPlayers();
     state.aiTypes = selectedAiTypes();
     state.initialPieces = new Map(state.board.pieces);
+    clearMoveAnimation();
     renderBoard();
     centerCameraOn();
     clearHighlights();
@@ -634,6 +727,12 @@ function init() {
     state.aiPlayers.add(state.currentPlayer);
     state.aiTypes[state.currentPlayer] = state.aiTypes[state.currentPlayer] || "distance_graph";
     handleAiMove();
+  });
+  document.getElementById("anim-enabled").addEventListener("change", (e) => {
+    state.animationEnabled = e.target.checked;
+  });
+  document.getElementById("anim-speed").addEventListener("change", (e) => {
+    state.animationSpeed = parseFloat(e.target.value) || 0.125;
   });
   document.getElementById("replay-start").addEventListener("click", () => { startReplay(); setReplayStep(0); });
   document.getElementById("replay-prev").addEventListener("click", () => setReplayStep((state.replayStep ?? state.pieceSnapshots.length) - 1));

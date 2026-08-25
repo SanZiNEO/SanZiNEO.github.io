@@ -40,6 +40,7 @@ const state = {
   pieceGroup: null,
   pointGroup: null,
   routeGroup: null,
+  frontPointGroup: null,
   highlightGroup: null,
   pieceMeshes: [],
   highlightMeshes: [],
@@ -200,9 +201,16 @@ function initScene() {
   state.pieceGroup = new THREE.Group();
   state.pointGroup = new THREE.Group();
   state.routeGroup = new THREE.Group();
+  state.frontPointGroup = new THREE.Group();
   state.highlightGroup = new THREE.Group();
-  // 线先画、点后画，避免路线遮住点阵
-  scene.add(state.routeGroup, state.pointGroup, state.pieceGroup, state.highlightGroup);
+  scene.add(state.pointGroup, state.routeGroup, state.frontPointGroup, state.pieceGroup, state.highlightGroup);
+
+  // 每帧绘制顺序：路线 → 点阵 → 重复点阵 → 小球 → 高亮
+  state.routeGroup.renderOrder = 0;
+  state.pointGroup.renderOrder = 1;
+  state.frontPointGroup.renderOrder = 2;
+  state.pieceGroup.renderOrder = 3;
+  state.highlightGroup.renderOrder = 4;
 
   function resize() {
     const w = container.clientWidth || 800;
@@ -360,6 +368,7 @@ function renderBoard() {
 
   clearGroup(state.routeGroup);
   clearGroup(state.pointGroup);
+  clearGroup(state.frontPointGroup);
   clearGroup(state.pieceGroup);
   state.pieceMeshes = [];
 
@@ -382,6 +391,12 @@ function renderBoard() {
   state.pointGroup.add(buildPointCloud(board.points, baseKeys));
   for (const { player, list } of baseLists) {
     state.pointGroup.add(buildBasePointCloud(list, PLAYER_COLORS[(player - 1) % PLAYER_COLORS.length]));
+  }
+
+  // 在小球之前重复绘制一次点阵，确保点不被路线遮挡
+  state.frontPointGroup.add(buildPointCloud(board.points, baseKeys));
+  for (const { player, list } of baseLists) {
+    state.frontPointGroup.add(buildBasePointCloud(list, PLAYER_COLORS[(player - 1) % PLAYER_COLORS.length]));
   }
 
   // 棋子（使用和本地一致的 Phong 材质）
